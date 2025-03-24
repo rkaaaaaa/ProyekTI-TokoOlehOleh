@@ -20,13 +20,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('logout') }}">Logout</a>
                     </li>
-
-                    <!-- Tampilkan tombol Tambah User hanya untuk Superadmin -->
-                    @if(auth()->check() && auth()->user()->levelUser === 'Superadmin')
-                        <li class="nav-item">
-                            <a href="{{ route('user.create') }}" class="btn btn-primary">Tambah User</a>
-                        </li>
-                    @endif
                 </ul>
             </div>
         </div>
