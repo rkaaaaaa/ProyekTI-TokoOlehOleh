@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
-    public function showRegisterForm()
+    public function showForm()
     {
-        return view('register'); // Menampilkan halaman register
+        if (!Auth::check() || Auth::user()->levelUser !== 'Superadmin') {
+            return redirect()->route('dashboard')->withErrors(['error' => 'Anda tidak memiliki izin untuk mengakses halaman ini.']);
+        }
+
+        return view('register');
     }
+
 
     public function register(Request $request)
     {

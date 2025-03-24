@@ -9,7 +9,7 @@ use App\Http\Middleware\AuthenticateUser;
 
 // Redirect root ke /dashboard (langsung ke daftar produk)
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    return view('home');
 });
 
 // Dashboard langsung mengarah ke /dashboard/produk
@@ -31,6 +31,11 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Rute Register
-Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
+// // Rute Register
+// Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
+// Route::post('/register', [RegisterController::class, 'register']);
+
+Route::middleware(['superadmin'])->group(function () {
+    Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
+    Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
+});

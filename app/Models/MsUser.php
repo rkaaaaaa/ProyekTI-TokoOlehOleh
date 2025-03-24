@@ -14,4 +14,6 @@ class MsUser extends Model
     public $timestamps = true;
 
     protected $fillable = ['namaUser', 'passwordUser', 'levelUser', 'statusUser'];
+
+    protected $hidden = ['passwordUser'];
 }
