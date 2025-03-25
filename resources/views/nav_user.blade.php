@@ -27,7 +27,7 @@
 
         .navbar-brand img {
             height: 50px;
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease;
         }
 
         .navbar-brand img:hover {
@@ -78,7 +78,7 @@
 
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('login') }}">
+            <a class="navbar-brand" href="{{ route('page.home') }}">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo">
             </a>
 
@@ -89,20 +89,20 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a href="#" class="nav-link {{ Request::is('/') ? 'active' : '' }}">Home</a>
+                        <a href="{{ route('page.home') }}" class="nav-link {{ Request::is('/') ? 'active' : '' }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#products" class="nav-link {{ Request::is('produk') ? 'active' : '' }}">Produk</a>
+                        <a href="{{ route('page.produk') }}" class="nav-link {{ Request::is('produk') ? 'active' : '' }}">Produk</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#contact" class="nav-link {{ Request::is('contact') ? 'active' : '' }}">Kontak</a>
+                        <a href="{{ route('kontak') }}" class="nav-link {{ Request::is('kontak') ? 'active' : '' }}">Kontak</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ Request::is('about*') ? 'active' : '' }}" href="#"
                             role="button">Tentang Kami</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Sejarah</a></li>
-                            <li><a class="dropdown-item" href="#">Lokasi</a></li>
+                            <li><a class="dropdown-item" href="{{ route('sejarah') }}">Sejarah</a></li>
+                            <li><a class="dropdown-item" href="{{ route('page.lokasi') }}">Lokasi</a></li>
                         </ul>
                     </li>
                 </ul>
