@@ -9,7 +9,6 @@
 </head>
 <body>
 
-    {{-- Include Navbar --}}
     @include('nav_user')
 
     <div class="container">
