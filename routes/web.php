@@ -12,6 +12,8 @@ Route::get('/', function () {
     return view('home');
 })->name('page.home');
 
+
+Route::middleware('auth')->group(function () {
 // Dashboard langsung mengarah ke /dashboard/produk
 Route::get('/dashboard', function () {
     return redirect()->route('dashboard.produk');
@@ -25,17 +27,22 @@ Route::post('/dashboard/produk', [ProdukController::class, 'store'])->name('prod
 Route::get('/dashboard/produk/{id}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
 Route::put('/dashboard/produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
 Route::delete('/dashboard/produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+});
 
 // Rute Login
+Route::middleware('guest')->group(function () {
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+});
+
+
 
 // // Rute Register
 // Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
 // Route::post('/register', [RegisterController::class, 'register']);
 
-Route::middleware(['superadmin'])->group(function () {
+Route::middleware(['auth','superadmin'])->group(function () {
     Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
     Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
 });

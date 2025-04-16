@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\MsUser; // Menggunakan model MsUser
+use Illuminate\Support\Facades\Auth;
+
 
 class LoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('login'); // Menampilkan halaman login
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+        return view('login');
     }
+
+
 
     public function login(Request $request)
     {
@@ -20,34 +27,34 @@ class LoginController extends Controller
             'passwordUser' => 'required'
         ]);
 
-        // Cek apakah user ada di database
-        $user = MsUser::where('namaUser', $request->namaUser)
-            ->where('passwordUser', md5($request->passwordUser)) // Password MD5
-            ->first();
-
+    // Cek apakah user ada di database
+    $user = MsUser::where('namaUser', $request->namaUser)
+        ->where('passwordUser', md5($request->passwordUser)) // Password MD5
+        ->first();
+        
         if ($user) {
             // Set session user
-            Session::put('user', $user);
-            
-            // Debugging: Periksa apakah session user ada
-            if(Session::has('user')) {
-                // Jika berhasil menyimpan session, redirect ke halaman dashboard
-                if ($user->levelUser === 'Superadmin') {
-                    return redirect()->route('dashboard');
-                } elseif ($user->levelUser === 'Administrator') {
-                    return redirect()->route('dashboard.produk');
-                }
-            } else {
-                return redirect()->back()->with('error', 'Terjadi masalah dengan session!');
+            Auth::login($user); // Login menggunakan Auth
+        
+            // Setelah login, arahkan berdasarkan level user
+            if ($user->levelUser === 'Superadmin') {
+                return redirect()->route('dashboard');
+            } elseif ($user->levelUser === 'Administrator') {
+                return redirect()->route('dashboard.produk');
             }
         } else {
             return redirect()->back()->with('error', 'Username atau password salah!');
         }
     }
 
-    public function logout()
+
+    public function logout(Request $request)
     {
-        Session::forget('user'); // Hapus session user
-        return redirect('/login')->with('success', 'Anda telah logout.');
+        Auth::logout(); // Proses logout
+
+        $request->session()->invalidate(); // Menghapus session
+        $request->session()->regenerateToken(); // Mengganti CSRF token
+
+        return redirect()->route('login'); // Mengarahkan pengguna ke halaman login setelah logout
     }
 }

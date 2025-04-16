@@ -37,12 +37,19 @@
 <body>
     <div class="login-container">
         <h2 class="text-center mb-4">Login</h2>
+
+        {{-- Pesan sukses --}}
         @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
         @endif
 
+        {{-- Pesan error umum (misalnya login gagal) --}}
         @if (session('error'))
-            <div class="alert alert-danger">{{ $errors->first() }}</div>
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
         @endif
 
         <form action="{{ url('/login') }}" method="POST">
@@ -50,22 +57,24 @@
             <div class="mb-3">
                 <label for="namaUser" class="form-label">Nama User</label>
                 <input type="text" id="namaUser" name="namaUser"
-                    class="form-control {{ $errors->has('namaUser') ? 'is-invalid' : '' }}" placeholder="Nama User"
-                    required>
-                @if ($errors->has('namaUser'))
-                    <div class="invalid-feedback">{{ $errors->first('namaUser') }}</div>
-                @endif
+                    class="form-control @error('namaUser') is-invalid @enderror"
+                    value="{{ old('namaUser') }}"
+                    placeholder="Nama User" required>
+                @error('namaUser')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="mb-3">
                 <label for="passwordUser" class="form-label">Password</label>
                 <input type="password" id="passwordUser" name="passwordUser"
-                    class="form-control {{ $errors->has('passwordUser') ? 'is-invalid' : '' }}" placeholder="Password"
-                    required>
-                @if ($errors->has('passwordUser'))
-                    <div class="invalid-feedback">{{ $errors->first('passwordUser') }}</div>
-                @endif
+                    class="form-control @error('passwordUser') is-invalid @enderror"
+                    placeholder="Password" required>
+                @error('passwordUser')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
+
             <button type="submit" class="btn btn-login w-100">Login</button>
         </form>
     </div>

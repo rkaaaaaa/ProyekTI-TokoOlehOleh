@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MsUser extends Model
+class MsUser extends Authenticatable 
 {
     use HasFactory;
 
@@ -16,4 +17,9 @@ class MsUser extends Model
     protected $fillable = ['namaUser', 'passwordUser', 'levelUser', 'statusUser'];
 
     protected $hidden = ['passwordUser'];
+
+    public function getAuthPassword()
+    {
+        return $this->passwordUser; // Pastikan nama kolom sesuai
+    }
 }
