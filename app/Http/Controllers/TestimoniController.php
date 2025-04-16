@@ -1,111 +1,84 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use App\Models\Testimoni;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Session;
 
 class TestimoniController extends Controller
 {
-    private function cekAkses()
-    {
-        $user = Session::get('user');
-        if (!$user || !in_array($user->levelUser, ['Superadmin', 'Administrator'])) {
-            abort(403, 'Akses ditolak.');
-        }
-    }
-
     public function index()
     {
-        $this->cekAkses();
-        $user = Session::get('user');
-        $testimoni = Testimoni::where('idUser', $user->idUser)
-            ->orderBy('tanggalTestimoni', 'desc')
-            ->get();
-
+        $testimoni = Testimoni::all();
         return view('testimoni', compact('testimoni'));
     }
 
     public function create()
     {
-        $this->cekAkses();
         return view('tambahtestimoni');
     }
 
     public function store(Request $request)
     {
-        $this->cekAkses();
-
         $request->validate([
+            'idUser' => 'required|integer',
             'gambarTestimoni' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'tanggalTestimoni' => 'required|date'
         ]);
 
-        $file = $request->file('gambarTestimoni');
-        $filename = time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('uploads/testimoni'), $filename);
+        $gambarPath = $request->file('gambarTestimoni')->store('testimoni', 'public');
 
         Testimoni::create([
-            'idUser' => Session::get('user')->idUser,
-            'gambarTestimoni' => $filename,
+            'idUser' => $request->idUser,
+            'gambarTestimoni' => $gambarPath,
             'tanggalTestimoni' => $request->tanggalTestimoni
         ]);
 
-        return redirect()->route('testimoni.index')->with('success', 'Testimoni berhasil ditambahkan.');
+        return redirect()->route('testimoni.index')->with('success', 'Testimoni berhasil ditambahkan');
     }
 
     public function edit($id)
     {
-        $this->cekAkses();
-
-        $testimoni = Testimoni::where('idTestimoni', $id)
-            ->where('idUser', Session::get('user')->idUser)
-            ->firstOrFail();
-
+        $testimoni = Testimoni::findOrFail($id);
         return view('edittestimoni', compact('testimoni'));
     }
 
     public function update(Request $request, $id)
     {
-        $this->cekAkses();
+        $testimoni = Testimoni::findOrFail($id);
 
-        $testimoni = Testimoni::where('idTestimoni', $id)
-            ->where('idUser', Session::get('user')->idUser)
-            ->firstOrFail();
-
-        $filename = $testimoni->gambarTestimoni;
+        $request->validate([
+            'gambarTestimoni' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'tanggalTestimoni' => 'required|date'
+        ]);
 
         if ($request->hasFile('gambarTestimoni')) {
-            File::delete(public_path('uploads/testimoni/' . $filename));
-            $file = $request->file('gambarTestimoni');
-            $filename = time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/testimoni'), $filename);
+            if ($testimoni->gambarTestimoni) {
+                Storage::disk('public')->delete($testimoni->gambarTestimoni);
+            }
+            $gambarPath = $request->file('gambarTestimoni')->store('testimoni', 'public');
+            $testimoni->gambarTestimoni = $gambarPath;
         }
 
         $testimoni->update([
-            'gambarTestimoni' => $filename,
-            'tanggalTestimoni' => $request->tanggalTestimoni ?? now()->toDateString()
+            'tanggalTestimoni' => $request->tanggalTestimoni
         ]);
 
-        return redirect()->route('testimoni.index')->with('success', 'Testimoni berhasil diperbarui.');
+        return redirect()->route('testimoni.index')->with('success', 'Testimoni berhasil diperbarui');
     }
 
     public function destroy($id)
     {
-        $this->cekAkses();
-
         $testimoni = Testimoni::findOrFail($id);
 
-        if ($testimoni->gambarTestimoni && file_exists(public_path('uploads/testimoni/' . $testimoni->gambarTestimoni))) {
-            unlink(public_path('uploads/testimoni/' . $testimoni->gambarTestimoni));
+        if ($testimoni->gambarTestimoni) {
+            Storage::disk('public')->delete($testimoni->gambarTestimoni);
         }
 
         $testimoni->delete();
 
-        return redirect()->route('testimoni.index')->with('success', 'Testimoni berhasil dihapus.');
+        return redirect()->route('testimoni.index')->with('success', 'Testimoni berhasil dihapus');
     }
 }

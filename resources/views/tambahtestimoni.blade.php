@@ -18,9 +18,18 @@
                         <input type="date" class="form-control" name="tanggalTestimoni" id="tanggalTestimoni" required>
                     </div>
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-custom">Simpan</button>
-                    </div>
+                    <button type="submit" class="btn btn-custom">Simpan</button>
+
+<style>
+    .btn-custom {
+        background-color: red;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 30px;
+        font-weight: bold;
+        border: none;
+    }
+</style>
                 </form>
             </div>
         </div>
