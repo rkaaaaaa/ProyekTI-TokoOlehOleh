@@ -12,15 +12,28 @@ use App\Http\Controllers\TokoController;
 | Web Routes
 |--------------------------------------------------------------------------
 */
-
 // ==========================
 // ROUTE UTAMA (FRONTEND)
 // ==========================
-Route::get('/', fn () => view('home'))->name('page.home');
-Route::get('/produk', fn () => view('userproduk'))->name('page.produk');
-Route::get('/kontak', fn () => view('usercontact'))->name('kontak');
-Route::get('/sejarah', fn () => view('usersejarah'))->name('sejarah');
-Route::get('/lokasi', fn () => view('userlokasi'))->name('page.lokasi');
+Route::get('/', function () {
+    return view('home');
+})->name('page.home');
+
+Route::get('/produk', function () {
+    return view('userproduk');
+})->name('page.produk');
+
+Route::get('/kontak', function () {
+    return view('usercontact');
+})->name('kontak');
+
+Route::get('/sejarah', function () {
+    return view('usersejarah');
+})->name('sejarah');
+
+Route::get('/lokasi', function () {
+    return view('userlokasi');
+})->name('page.lokasi');
 
 // ==========================
 // ROUTE AUTENTIKASI
@@ -38,17 +51,15 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // ==========================
 Route::middleware('auth')->group(function () {
     // Redirect /dashboard ke halaman produk
-    Route::get('/dashboard', fn () => redirect()->route('dashboard.produk'))->name('dashboard');
+    Route::get('/dashboard', fn() => redirect()->route('dashboard.produk'))->name('dashboard');
 
     // ======== PRODUK ========
-    Route::prefix('dashboard/produk')->group(function () {
-        Route::get('/', [ProdukController::class, 'index'])->name('dashboard.produk');
-        Route::get('/tambah', [ProdukController::class, 'create'])->name('produk.create');
-        Route::post('/', [ProdukController::class, 'store'])->name('produk.store');
-        Route::get('/{id}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
-        Route::put('/{id}', [ProdukController::class, 'update'])->name('produk.update');
-        Route::delete('/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
-    });
+    Route::get('/dashboard/produk', [ProdukController::class, 'index'])->name('dashboard.produk');
+    Route::get('/dashboard/produk/tambah', [ProdukController::class, 'create'])->name('produk.create');
+    Route::post('/dashboard/produk', [ProdukController::class, 'store'])->name('produk.store');
+    Route::get('/dashboard/produk/{id}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
+    Route::put('/dashboard/produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
+    Route::delete('/dashboard/produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
 
     // ======== TESTIMONI ========
     Route::prefix('dashboard/testimoni')->group(function () {
