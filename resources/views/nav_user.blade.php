@@ -71,6 +71,9 @@
         .dropdown:hover .dropdown-menu {
             display: block;
         }
+        .font-family {
+            font-family: 'Poppins', sans-serif;
+        }
     </style>
 </head>
 
