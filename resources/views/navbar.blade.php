@@ -33,16 +33,16 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('dashboard.produk') }}">Produk</a></li>
                             <li><a class="dropdown-item" href="{{ url('/dashboard/testimoni') }}">Testimoni</a></li>
-                            <li><a class="dropdown-item" href="{{ url('/dashboard/toko') }}">Toko</a></li>
+                            <li><a class="dropdown-item" href="{{ route('toko.index') }}">Toko</a></li>
                         </ul>
                     </li>
                 </ul>
-
-                
-                    <form action="{{ route('logout') }}" method="POST" class="d-flex">
+                @if (auth()->check())
+                    <form action="{{ route('logout') }}" method="POST" class="d-flex ms-auto">
                         @csrf
                         <button type="submit" class="btn btn-outline-light">Logout</button>
                     </form>
+                @endif
 
             </div>
         </div>

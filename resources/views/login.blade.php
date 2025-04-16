@@ -64,15 +64,14 @@
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
-
             <div class="mb-3">
                 <label for="passwordUser" class="form-label">Password</label>
                 <input type="password" id="passwordUser" name="passwordUser"
-                    class="form-control @error('passwordUser') is-invalid @enderror"
+                    class="form-control {{ $errors->has('passwordUser') ? 'is-invalid' : '' }}"
                     placeholder="Password" required>
-                @error('passwordUser')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                    @if ($errors->has('passwordUser'))
+                    <div class="invalid-feedback">{{ $errors->first('passwordUser') }}</div>
+                @endif
             </div>
 
             <button type="submit" class="btn btn-login w-100">Login</button>

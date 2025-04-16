@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MsUser extends Authenticatable 
+class MsUser extends Authenticatable
 {
     use HasFactory;
 
@@ -21,5 +21,10 @@ class MsUser extends Authenticatable
     public function getAuthPassword()
     {
         return $this->passwordUser; // Pastikan nama kolom sesuai
+    }
+
+    public function tokos()
+    {
+        return $this->hasMany(Toko::class, 'idUser');
     }
 }
