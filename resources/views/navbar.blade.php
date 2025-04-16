@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -30,30 +28,23 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('dashboard.produk') }}">Produk</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/dashboard/testimoni') }}">Testimoni</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/dashboard/toko') }}">Toko</a></li>
                         </ul>
                     </li>
-
-                    {{-- @if (auth()->check() && auth()->user()->levelUser == 'Superadmin')
-                        <li class="nav-item">
-                            <a href="{{ route('user.create') }}" class="btn btn-primary ms-2">Tambah User</a>
-                        </li>
-                    @endif --}}
                 </ul>
 
                 {{-- Tombol Logout --}}
-                @if (auth()->check())
+                @if (session()->has('user'))
                     <form action="{{ route('logout') }}" method="POST" class="ms-auto">
                         @csrf
                         <button type="submit" class="btn btn-outline-light">Logout</button>
                     </form>
                 @endif
-
-
             </div>
         </div>
     </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </html>

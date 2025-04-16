@@ -1,54 +1,95 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2 class="text-danger fw-bold">Tambah Produk</h2>
-    <div class="row">
-        <div class="col-md-8">
-            <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" oninput="updatePreview()">
-                @csrf
-                
-                <div class="mb-3">
-                    <label class="form-label">ID Gambar</label>
-                    <input type="number" class="form-control" name="idUser" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Nama Produk</label>
-                    <input type="text" class="form-control" name="namaProduk" id="namaProduk" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Harga Produk</label>
-                    <input type="number" class="form-control" name="hargaProduk" id="hargaProduk" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Gambar</label>
-                    <input type="file" class="form-control" name="gambarProduk" id="gambarProduk" accept="image/*" onchange="previewImage(event)" required>
-                </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Deskripsi</label>
-                    <textarea class="form-control" name="deskripsiProduk" rows="4"></textarea>
-                </div>
+<style>
+    .rounded-box {
+        border: 2px solid #ccc;
+        border-radius: 25px;
+        padding: 20px;
+        background-color: #fff;
+    }
 
-                <div class="mb-3">
-                    <label class="form-label">Kategori Produk</label>
-                    <select class="form-control" name="kategoriProduk" id="kategoriProduk" required>
-                        <option value="Sambel">Sambel</option>
-                        <option value="Makanan">Makanan</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="btn btn-danger">Simpan</button>
-            </form>
+    .form-control {
+        border-radius: 20px;
+        padding: 10px 15px;
+    }
+
+    .btn-custom {
+        background-color: red;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 30px;
+        font-weight: bold;
+        border: none;
+    }
+
+    .preview-card {
+        border: 2px solid #ddd;
+        border-radius: 25px;
+        padding: 20px;
+        background-color: #fafafa;
+        text-align: center;
+        height: 100%;
+    }
+
+    .preview-img {
+        max-height: 200px;
+        object-fit: contain;
+        border: 1px dashed #ccc;
+        border-radius: 15px;
+        margin-bottom: 10px;
+    }
+
+    input[type="file"]::file-selector-button {
+        border: none;
+        padding: 6px 15px;
+        border-radius: 20px;
+        background-color: #f2f2f2;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="container mt-4">
+    <h4 class="fw-bold text-danger mb-4">Tambah Produk</h4>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="rounded-box">
+                <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" oninput="updatePreview()">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label for="gambarProduk" class="form-label">Gambar Produk</label>
+                        <input type="file" class="form-control" name="gambarProduk" id="gambarProduk" accept="image/*" onchange="previewImage(event)" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" name="namaProduk" id="namaProduk" class="form-control" placeholder="Nama Produk" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <select name="kategoriProduk" id="kategoriProduk" class="form-control" required>
+                            <option value="">-- Pilih Kategori --</option>
+                            <option value="Sambel">Sambel</option>
+                            <option value="Makanan">Makanan</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="number" name="hargaProduk" id="hargaProduk" class="form-control" placeholder="Harga" required>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-custom">Simpan</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        
-        <div class="col-md-4">
-            <div class="card p-3">
-                <h5 class="text-center">Preview Produk</h5>
-                <img id="previewImage" src="" class="img-fluid d-none" alt="Preview Gambar">
+
+        <div class="col-md-5">
+            <div class="preview-card">
+                <h5>Preview Produk</h5>
+                <img id="previewImage" src="{{ asset('assets/placeholder.png') }}" class="preview-img" alt="Preview">
                 <p><strong>Nama Produk:</strong> <span id="previewNama">-</span></p>
                 <p><strong>Varian:</strong> <span id="previewVarian">-</span></p>
                 <p><strong>Harga:</strong> <span id="previewHarga">Rp -</span></p>
@@ -58,17 +99,19 @@
 </div>
 
 <script>
-function previewImage(event) {
-    const preview = document.getElementById('previewImage');
-    preview.src = URL.createObjectURL(event.target.files[0]);
-    preview.classList.remove('d-none');
-}
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('previewImage');
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+        }
+    }
 
-function updatePreview() {
-    document.getElementById('previewNama').textContent = document.getElementById('namaProduk').value || '-';
-    const harga = document.getElementById('hargaProduk').value;
-    document.getElementById('previewHarga').textContent = harga ? 'Rp ' + harga : 'Rp -';
-    document.getElementById('previewVarian').textContent = document.getElementById('kategoriProduk').value || '-';
-}
+    function updatePreview() {
+        document.getElementById('previewNama').textContent = document.getElementById('namaProduk').value || '-';
+        document.getElementById('previewVarian').textContent = document.getElementById('kategoriProduk').value || '-';
+        const harga = document.getElementById('hargaProduk').value;
+        document.getElementById('previewHarga').textContent = harga ? 'Rp ' + harga : 'Rp -';
+    }
 </script>
 @endsection
