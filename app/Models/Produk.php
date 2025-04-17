@@ -18,7 +18,8 @@ class Produk extends Model
         'namaProduk',
         'hargaProduk',
         'gambarProduk',
-        'deskripsiProduk'
+        'deskripsiProduk',
+        'kategoriProduk'
     ];
 }
 

@@ -26,10 +26,9 @@
                 <th>Aksi</th>
             </tr>
         </thead>
-        <tbody>
-            @foreach($produk as $item)
+            @foreach($produk as $index => $item)
             <tr>
-                <td>{{ $item->idProduk }}</td>
+                <td>{{ $index + 1 }}</td>
                 <td>{{ $item->namaProduk }}</td>
                 <td>Rp {{ number_format($item->hargaProduk, 0, ',', '.') }}</td>
                 <td>

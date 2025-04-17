@@ -33,7 +33,7 @@ class ProdukController extends Controller
         $gambarPath = $request->file('gambarProduk')->store('produk', 'public');
 
         Produk::create([
-            'idUser' => Auth::id(), // ✅ Ambil langsung dari user login
+            'idUser' => Auth::id(),
             'namaProduk' => $request->namaProduk,
             'hargaProduk' => $request->hargaProduk,
             'gambarProduk' => $gambarPath,

@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
     .rounded-box {
         border: 2px solid #ccc;
@@ -55,13 +58,9 @@
     <div class="row">
         <div class="col-md-7">
             <div class="rounded-box">
-                <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" oninput="updatePreview()">
+                <form id="formProduk" action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" oninput="updatePreview()">
                     @csrf
 
-                    {{-- ID User input manual
-                    <div class="mb-3">
-                        <input type="number" name="idUser" class="form-control" placeholder="ID User" required>
-                    </div> --}}
                     <div class="mb-3">
                         <label class="form-label">ID User</label>
                         <input type="text" class="form-control" value="{{ Auth::id() }}" readonly>
@@ -78,7 +77,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <select name="kategoriProduk" id="kategoriProduk" class="form-control" required>
+                        <select name="kategoriProduk" id="kategoriProduk" class="form-control" onchange="updatePreview()" required>
                             <option value="">-- Pilih Kategori --</option>
                             <option value="Sambel">Sambel</option>
                             <option value="Makanan">Makanan</option>
@@ -105,7 +104,7 @@
                 <h5>Preview Produk</h5>
                 <img id="previewImage" src="{{ asset('assets/placeholder.png') }}" class="preview-img" alt="Preview">
                 <p><strong>Nama Produk:</strong> <span id="previewNama">-</span></p>
-                <p><strong>Varian:</strong> <span id="previewVarian">-</span></p>
+                <p><strong>Kategori:</strong> <span id="previewVarian">-</span></p>
                 <p><strong>Harga:</strong> <span id="previewHarga">Rp -</span></p>
             </div>
         </div>
@@ -127,5 +126,24 @@
         const harga = document.getElementById('hargaProduk').value;
         document.getElementById('previewHarga').textContent = harga ? 'Rp ' + harga : 'Rp -';
     }
+
+    // SweetAlert2 untuk konfirmasi submit
+    document.getElementById('formProduk').addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Simpan Produk?',
+            text: 'Apakah kamu yakin ingin menyimpan produk ini?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#aaa'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                e.target.submit();
+            }
+        });
+    });
 </script>
 @endsection
