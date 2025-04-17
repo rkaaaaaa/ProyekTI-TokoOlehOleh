@@ -51,17 +51,15 @@
 </style>
 
 <div class="container mt-4">
-    <h4 class="fw-bold text-danger mb-4">Tambah Produk</h4>
+    <h4 class="fw-bold text-danger mb-4">Edit Produk</h4>
     <div class="row">
         <div class="col-md-7">
             <div class="rounded-box">
-                <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" oninput="updatePreview()">
+                <form action="{{ route('produk.update', $produk->idProduk) }}" method="POST" enctype="multipart/form-data" oninput="updatePreview()">
                     @csrf
+                    @method('PUT')
 
-                    {{-- ID User input manual
-                    <div class="mb-3">
-                        <input type="number" name="idUser" class="form-control" placeholder="ID User" required>
-                    </div> --}}
+                    {{-- ID User otomatis (readonly) --}}
                     <div class="mb-3">
                         <label class="form-label">ID User</label>
                         <input type="text" class="form-control" value="{{ Auth::id() }}" readonly>
@@ -70,31 +68,31 @@
 
                     <div class="mb-3">
                         <label for="gambarProduk" class="form-label">Gambar Produk</label>
-                        <input type="file" class="form-control" name="gambarProduk" id="gambarProduk" accept="image/*" onchange="previewImage(event)" required>
+                        <input type="file" class="form-control" name="gambarProduk" id="gambarProduk" accept="image/*" onchange="previewImage(event)">
                     </div>
 
                     <div class="mb-3">
-                        <input type="text" name="namaProduk" id="namaProduk" class="form-control" placeholder="Nama Produk" required>
+                        <input type="text" name="namaProduk" id="namaProduk" class="form-control" placeholder="Nama Produk" value="{{ $produk->namaProduk }}" required>
                     </div>
 
                     <div class="mb-3">
                         <select name="kategoriProduk" id="kategoriProduk" class="form-control" required>
                             <option value="">-- Pilih Kategori --</option>
-                            <option value="Sambel">Sambel</option>
-                            <option value="Makanan">Makanan</option>
+                            <option value="Sambel" {{ $produk->kategoriProduk == 'Sambel' ? 'selected' : '' }}>Sambel</option>
+                            <option value="Makanan" {{ $produk->kategoriProduk == 'Makanan' ? 'selected' : '' }}>Makanan</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <input type="number" name="hargaProduk" id="hargaProduk" class="form-control" placeholder="Harga" required>
+                        <input type="number" name="hargaProduk" id="hargaProduk" class="form-control" placeholder="Harga" value="{{ $produk->hargaProduk }}" required>
                     </div>
 
                     <div class="mb-3">
-                        <textarea name="deskripsiProduk" id="deskripsiProduk" class="form-control" placeholder="Deskripsi Produk" rows="4" required></textarea>
+                        <textarea name="deskripsiProduk" id="deskripsiProduk" class="form-control" rows="4" required>{{ $produk->deskripsiProduk }}</textarea>
                     </div>
 
                     <div class="text-center">
-                        <button type="submit" class="btn btn-custom">Simpan</button>
+                        <button type="submit" class="btn btn-custom">Update</button>
                     </div>
                 </form>
             </div>
@@ -103,10 +101,10 @@
         <div class="col-md-5">
             <div class="preview-card">
                 <h5>Preview Produk</h5>
-                <img id="previewImage" src="{{ asset('assets/placeholder.png') }}" class="preview-img" alt="Preview">
-                <p><strong>Nama Produk:</strong> <span id="previewNama">-</span></p>
-                <p><strong>Varian:</strong> <span id="previewVarian">-</span></p>
-                <p><strong>Harga:</strong> <span id="previewHarga">Rp -</span></p>
+                <img id="previewImage" src="{{ asset('storage/' . $produk->gambarProduk) }}" class="preview-img" alt="Preview">
+                <p><strong>Nama Produk:</strong> <span id="previewNama">{{ $produk->namaProduk }}</span></p>
+                <p><strong>Varian:</strong> <span id="previewVarian">{{ $produk->kategoriProduk }}</span></p>
+                <p><strong>Harga:</strong> <span id="previewHarga">Rp {{ number_format($produk->hargaProduk, 0, ',', '.') }}</span></p>
             </div>
         </div>
     </div>
@@ -114,11 +112,8 @@
 
 <script>
     function previewImage(event) {
-        const file = event.target.files[0];
         const preview = document.getElementById('previewImage');
-        if (file) {
-            preview.src = URL.createObjectURL(file);
-        }
+        preview.src = URL.createObjectURL(event.target.files[0]);
     }
 
     function updatePreview() {

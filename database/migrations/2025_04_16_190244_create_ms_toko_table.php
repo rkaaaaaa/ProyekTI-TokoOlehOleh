@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('namaToko', 25);
             $table->string('alamatToko', 55);
 
-            $table->foreign('idUser')->references('id')->on('ms_user')->onDelete('cascade');
+            $table->foreign('idUser')->references('idUser')->on('ms_user')->onDelete('cascade');
         });
         
     }

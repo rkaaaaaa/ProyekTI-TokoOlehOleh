@@ -6,18 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Toko extends Model
 {
-    public $timestamps = false; 
-
     protected $table = 'ms_toko';
     protected $primaryKey = 'idToko';
     public $incrementing = true;
-    protected $fillable = ['namaToko', 'alamatToko', 'idUser'];
+    public $timestamps = false;
 
+    protected $fillable = [
+        'namaToko',
+        'alamatToko',
+        'idUser',
+    ];
 
-    // Relasi ke model User
+    // Relasi ke ms_user
     public function user()
     {
-         return $this->belongsTo(MsUser::class, 'idUser', 'idUser');
+        return $this->belongsTo(MsUser::class, 'idUser', 'idUser');
     }
 }
-

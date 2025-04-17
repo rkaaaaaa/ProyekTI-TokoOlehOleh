@@ -21,7 +21,7 @@
                     </div>
 
                     <div class="text-center">
-                        <button type="submit" class="btn btn-custom">Update</button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">Update</button>
                     </div>
                 </form>
             </div>

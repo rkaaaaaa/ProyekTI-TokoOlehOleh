@@ -26,8 +26,8 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>
-                        <img src="{{ asset('uploads/testimoni/' . $item->gambarTestimoni) }}" 
-                             alt="Testimoni Gambar" style="max-width: 100px; border-radius: 6px;">
+                        <img src="{{ asset('storage/' . $item->gambarTestimoni) }}" 
+                            alt="Testimoni Gambar" style="max-width: 100px; border-radius: 6px;">
                     </td>
                     <td>{{ \Carbon\Carbon::parse($item->tanggalTestimoni)->format('d M Y') }}</td>
                     <td>

@@ -22,6 +22,7 @@
                 <th>Harga</th>
                 <th>Gambar</th>
                 <th>Kategori</th>
+                <th>Deskripsi</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -35,6 +36,7 @@
                     <img src="{{ asset('storage/' . $item->gambarProduk) }}" alt="{{ $item->namaProduk }}" width="100">
                 </td>
                 <td>{{ $item->kategoriProduk }}</td>
+                <td>{{ $item->deskripsiProduk }}</td>
                 <td>
                     <a href="{{ route('produk.edit', $item->idProduk) }}" class="btn btn-warning btn-sm">Edit</a>
                     <form action="{{ route('produk.destroy', $item->idProduk) }}" method="POST" style="display:inline;">

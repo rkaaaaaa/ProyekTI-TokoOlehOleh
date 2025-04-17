@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Testimoni;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class TestimoniController extends Controller
 {
     public function index()
     {
-        $testimoni = Testimoni::all();
+        $testimoni = Testimoni::where('idUser', Auth::user()->idUser)->get();
         return view('testimoni', compact('testimoni'));
     }
 
@@ -23,7 +23,6 @@ class TestimoniController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'idUser' => 'required|integer',
             'gambarTestimoni' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'tanggalTestimoni' => 'required|date'
         ]);
@@ -31,7 +30,7 @@ class TestimoniController extends Controller
         $gambarPath = $request->file('gambarTestimoni')->store('testimoni', 'public');
 
         Testimoni::create([
-            'idUser' => $request->idUser,
+            'idUser' => Auth::user()->idUser,
             'gambarTestimoni' => $gambarPath,
             'tanggalTestimoni' => $request->tanggalTestimoni
         ]);
@@ -41,13 +40,17 @@ class TestimoniController extends Controller
 
     public function edit($id)
     {
-        $testimoni = Testimoni::findOrFail($id);
+        $testimoni = Testimoni::where('idTestimoni', $id)
+                                ->where('idUser', Auth::user()->idUser)
+                                ->firstOrFail();
         return view('edittestimoni', compact('testimoni'));
     }
 
     public function update(Request $request, $id)
     {
-        $testimoni = Testimoni::findOrFail($id);
+        $testimoni = Testimoni::where('idTestimoni', $id)
+                                ->where('idUser', Auth::user()->idUser)
+                                ->firstOrFail();
 
         $request->validate([
             'gambarTestimoni' => 'image|mimes:jpeg,png,jpg|max:2048',
@@ -71,7 +74,9 @@ class TestimoniController extends Controller
 
     public function destroy($id)
     {
-        $testimoni = Testimoni::findOrFail($id);
+        $testimoni = Testimoni::where('idTestimoni', $id)
+                                ->where('idUser', Auth::user()->idUser)
+                                ->firstOrFail();
 
         if ($testimoni->gambarTestimoni) {
             Storage::disk('public')->delete($testimoni->gambarTestimoni);

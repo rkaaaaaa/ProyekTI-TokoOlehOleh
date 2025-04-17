@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Toko;
 use App\Models\MsUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TokoController extends Controller
 {
@@ -21,16 +22,20 @@ class TokoController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'namaToko' => 'required',
-            'alamatToko' => 'required',
-            'idUser' => 'required|exists:ms_user,idUser',
-        ]);
+{
+    $request->validate([
+        'namaToko' => 'required',
+        'alamatToko' => 'required',
+    ]);
 
-        Toko::create($request->all());
-        return redirect()->route('toko.index')->with('success', 'Toko berhasil ditambahkan.');
-    }
+    Toko::create([
+        'idUser' => Auth::id(),
+        'namaToko' => $request->namaToko,
+        'alamatToko' => $request->alamatToko,
+    ]);
+
+    return redirect()->route('toko.index')->with('success', 'Toko berhasil ditambahkan.');
+}
 
     public function show(Toko $toko)
     {

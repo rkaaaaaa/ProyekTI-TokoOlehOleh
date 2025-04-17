@@ -1,10 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class ProdukController extends Controller
 {
@@ -22,7 +23,6 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'idUser' => 'required|integer',
             'namaProduk' => 'required|string|max:50',
             'hargaProduk' => 'required|integer',
             'gambarProduk' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -33,7 +33,7 @@ class ProdukController extends Controller
         $gambarPath = $request->file('gambarProduk')->store('produk', 'public');
 
         Produk::create([
-            'idUser' => $request->idUser,
+            'idUser' => Auth::id(), // ✅ Ambil langsung dari user login
             'namaProduk' => $request->namaProduk,
             'hargaProduk' => $request->hargaProduk,
             'gambarProduk' => $gambarPath,
@@ -79,7 +79,6 @@ class ProdukController extends Controller
 
         return redirect()->route('dashboard.produk')->with('success', 'Produk berhasil diperbarui');
     }
-
 
     public function destroy($id)
     {
