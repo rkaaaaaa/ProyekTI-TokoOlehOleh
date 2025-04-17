@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -36,11 +37,21 @@
                             <li><a class="dropdown-item" href="{{ route('toko.index') }}">Toko</a></li>
                         </ul>
                     </li>
+
+                    @if (auth()->check() && auth()->user()->role === 'superadmin')
+                        <li class="nav-item">
+                            <a class="nav-link text-warning" href="{{ route('admin.create') }}">Tambah Admin</a>
+                        </li>
+                    @endif
                 </ul>
+
+                {{-- KANAN: Tombol Logout --}}
                 @if (auth()->check())
-                    <form action="{{ route('logout') }}" method="POST" class="d-flex ms-auto" onsubmit="return confirm('Apakah kamu yakin ingin logout?')">
+                    <button onclick="logoutConfirm()" class="btn btn-outline-light">Logout</button>
+
+                    {{-- Form logout tersembunyi --}}
+                    <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
-                        <button type="submit" class="btn btn-outline-light">Logout</button>
                     </form>
                 @endif
 
@@ -50,5 +61,24 @@
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function logoutConfirm() {
+        Swal.fire({
+            title: 'Yakin ingin logout?',
+            text: "Kamu akan keluar dari dashboard.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Logout',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('logoutForm').submit();
+            }
+        });
+    }
+</script>
 
 </html>
