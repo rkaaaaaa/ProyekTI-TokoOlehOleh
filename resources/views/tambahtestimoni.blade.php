@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
     .btn-custom {
         background-color: red;
@@ -65,7 +67,7 @@
                     </div>
 
                     <div class="text-center">
-                        <button type="submit" class="btn btn-custom">Simpan</button>
+                        <button type="submit" class="btn btn-custom" onclick="return confirmSimpan(event)">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -90,6 +92,24 @@
     function updatePreview() {
         const tanggal = document.getElementById('tanggalTestimoni').value;
         document.getElementById('previewTanggal').textContent = tanggal || '-';
+    }
+
+    function confirmSimpan(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Simpan Testimoni',
+            text: 'Apakah kamu yakin ingin menyimpan testimonni?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                e.target.closest('form').submit();
+            }
+        });
     }
 </script>
 @endsection
