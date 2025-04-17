@@ -38,17 +38,10 @@
                     </li>
                 </ul>
                 @if (auth()->check())
-                    <form action="{{ route('logout') }}" method="POST" class="d-flex ms-auto"
-                        onsubmit="return confirm('Apakah kamu yakin ingin logout?')">
+                    <form action="{{ route('logout') }}" method="POST" class="d-flex ms-auto" onsubmit="return confirm('Apakah kamu yakin ingin logout?')">
                         @csrf
                         <button type="submit" class="btn btn-outline-light">Logout</button>
                     </form>
-                @endif
-                {{-- TAMPILKAN HANYA UNTUK SUPERADMIN --}}
-                @if (auth()->user()->role === 'superadmin')
-                    <li class="nav-item">
-                        <a class="nav-link text-warning" href="{{ route('admin.create') }}">Tambah Admin</a>
-                    </li>
                 @endif
 
             </div>

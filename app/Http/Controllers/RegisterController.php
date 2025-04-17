@@ -23,7 +23,7 @@ class RegisterController extends Controller
         $request->validate([
             'namaUser' => 'required|unique:ms_user,namaUser',
             'passwordUser' => 'required|min:5',
-            'levelUser' => 'required',
+            // 'levelUser' => 'required',
             'statusUser' => 'required'
         ]);
 
