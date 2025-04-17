@@ -20,7 +20,8 @@
     }
 
     .preview-img {
-        max-height: 200px;
+        max-width: 100%;
+        max-height: 300px;
         object-fit: contain;
         border: 1px dashed #ccc;
         border-radius: 15px;
