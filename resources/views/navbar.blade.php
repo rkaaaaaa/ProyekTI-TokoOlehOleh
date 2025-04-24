@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -20,12 +20,16 @@
 
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 
-                {{-- KIRI: Dropdown Dashboard --}}
+                {{-- KIRI: Menu Navigasi --}}
                 <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                    </li>
+
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dashboardDropdown" role="button"
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            Dashboard
+                            Kelola Data
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('dashboard.produk') }}">Produk</a></li>
@@ -34,29 +38,21 @@
                         </ul>
                     </li>
 
-                    {{-- Tambah Admin untuk Superadmin --}}
-                    @if (auth()->check() && auth()->user()->role === 'superadmin')
+                </ul>
+                <div class="d-flex ms-auto">
+                    @if (auth()->check() && auth()->user()->levelUser === 'Superadmin')
                         <li class="nav-item">
                             <a class="btn btn-outline-warning me-2" href="{{ route('admin.index') }}">Admin</a>
                         </li>
                     @endif
-                </ul>
 
-                <div class="d-flex ms-auto">
-                    {{-- KANAN: Tombol Logout --}}
                     @if (auth()->check())
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <button onclick="logoutConfirm()" class="btn btn-outline-light">Logout</button>
-                            </li>
-                        </ul>
-
+                        <button onclick="logoutConfirm()" class="btn btn-outline-light">Logout</button>
                         <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
                     @endif
                 </div>
-
             </div>
         </div>
     </nav>
