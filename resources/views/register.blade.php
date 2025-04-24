@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
             align-items: center;
             height: 100vh;
         }
+
         .register-container {
             background: white;
             padding: 30px;
@@ -21,15 +23,18 @@
             width: 100%;
             max-width: 400px;
         }
+
         .btn-register {
             background-color: #D40000;
             border: none;
         }
+
         .btn-register:hover {
             background-color: #a00000;
         }
     </style>
 </head>
+
 <body>
     <div class="register-container">
         <h2 class="text-center text-danger">Register</h2>
@@ -44,21 +49,19 @@
                 <input type="password" name="passwordUser" class="form-control" placeholder="Masukkan password" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Level User</label>
-                <select name="levelUser" class="form-select">
-                    <option value="Superadmin">Superadmin</option>
-                    <option value="Administrator">Administrator</option>
-                </select>
-            </div>
-            <div class="mb-3">
                 <label class="form-label">Status User</label>
                 <select name="statusUser" class="form-select">
                     <option value="Aktif">Aktif</option>
                     <option value="Nonaktif">Nonaktif</option>
                 </select>
             </div>
+
+            <!-- Menambahkan levelUser sebagai input tersembunyi -->
+            <input type="hidden" name="levelUser" value="Administrator">
+
             <button type="submit" class="btn btn-register w-100 text-white">Daftar</button>
         </form>
     </div>
 </body>
+
 </html>

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\LoginController;
-// use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\TokoController;
 
@@ -43,8 +43,8 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Jika butuh register
-// Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
-// Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
+Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
+Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
 
 // ==========================
 // ROUTE DASHBOARD (SETELAH LOGIN)
@@ -82,3 +82,4 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{toko}', [TokoController::class, 'destroy'])->name('toko.destroy');
     });
 });
+
