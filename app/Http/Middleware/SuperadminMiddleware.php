@@ -1,28 +1,22 @@
 <?php
 
+// app/Http/Middleware/SuperAdminMiddleware.php
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class SuperadminMiddleware
+class SuperAdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
     public function handle(Request $request, Closure $next)
     {
-        // Cek apakah user yang sedang login adalah Superadmin
+        // Cek apakah user sudah login dan memiliki level 'Superadmin'
         if (Auth::check() && Auth::user()->levelUser === 'Superadmin') {
-            return $next($request);  // Lanjutkan permintaan jika Superadmin
+            return $next($request);
         }
 
-        // Jika bukan Superadmin, alihkan ke dashboard atau halaman lain
+        // Redirect jika tidak memiliki izin
         return redirect()->route('dashboard')->withErrors(['error' => 'Anda tidak memiliki izin untuk mengakses halaman ini.']);
     }
 }

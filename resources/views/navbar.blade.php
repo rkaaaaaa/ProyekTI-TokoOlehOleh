@@ -37,23 +37,25 @@
                     {{-- Tambah Admin untuk Superadmin --}}
                     @if (auth()->check() && auth()->user()->role === 'superadmin')
                         <li class="nav-item">
-                            <a class="nav-link text-warning" href="{{ route('admin.create') }}">Tambah Admin</a>
+                            <a class="btn btn-outline-warning me-2" href="{{ route('admin.index') }}">Admin</a>
                         </li>
                     @endif
                 </ul>
 
-                {{-- KANAN: Tombol Logout --}}
-                @if (auth()->check())
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <button onclick="logoutConfirm()" class="btn btn-outline-light">Logout</button>
-                        </li>
-                    </ul>
+                <div class="d-flex ms-auto">
+                    {{-- KANAN: Tombol Logout --}}
+                    @if (auth()->check())
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <button onclick="logoutConfirm()" class="btn btn-outline-light">Logout</button>
+                            </li>
+                        </ul>
 
-                    <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                @endif
+                        <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    @endif
+                </div>
 
             </div>
         </div>
