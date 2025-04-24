@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <div class="container mt-4">
     <h4 class="fw-bold text-danger mb-4">Tambah Toko</h4>
 
@@ -35,7 +38,7 @@
             <input type="text" name="alamatToko" id="alamatToko" class="form-control" required value="{{ old('alamatToko') }}">
         </div>
 
-        <button class="btn btn-custom" type="submit">Simpan</button>
+        <button type="submit" class="btn btn-custom" onclick="return confirmSimpan(event)">Simpan</button>
         <a href="{{ route('toko.index') }}" class="btn btn-secondary">Kembali</a>
     </form>
 </div>
@@ -50,4 +53,24 @@
         border: none;
     }
 </style>
+
+<script>
+    function confirmSimpan(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Simpan Testimoni',
+            text: 'Apakah kamu yakin ingin menyimpan testimonni?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                e.target.closest('form').submit();
+            }
+        });
+    }
+</script>
 @endsection

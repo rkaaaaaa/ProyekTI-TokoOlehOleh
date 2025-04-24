@@ -17,7 +17,7 @@ class SuperadminSeeder extends Seeder
             DB::table('ms_user')->insert([
                 'idUser' => 1,
                 'namaUser' => 'Superadmin',
-                'passwordUser' => md5('tokooleholeh'), // Password default (bisa diubah nanti)
+                'passwordUser' => md5('tokooleholeh'),
                 'levelUser' => 'Superadmin',
                 'statusUser' => 'Aktif'
             ]);

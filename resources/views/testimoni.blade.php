@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 <div class="container mt-4">
     <h2 class="mb-4">Data Testimoni</h2>
 
@@ -31,12 +33,17 @@
                     </td>
                     <td>{{ \Carbon\Carbon::parse($item->tanggalTestimoni)->format('d M Y') }}</td>
                     <td>
-                        <a href="{{ route('testimoni.edit', $item->idTestimoni) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('testimoni.destroy', $item->idTestimoni) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm" onclick="return confirm('Hapus testimoni ini?')">Hapus</button>
-                        </form>
+                        <a href="{{ route('testimoni.edit', $item->idTestimoni) }}" class="btn btn-warning btn-sm" title="Edit">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    
+                    <form action="{{ route('testimoni.destroy', $item->idTestimoni) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm" title="Hapus" onclick="return confirm('Hapus testimooni ini?')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
                     </td>
                 </tr>
             @empty
