@@ -37,19 +37,17 @@
                             <li><a class="dropdown-item" href="{{ route('toko.index') }}">Toko</a></li>
                         </ul>
                     </li>
-                    
+
                 </ul>
                 <div class="d-flex ms-auto">
                     @if (auth()->check() && auth()->user()->levelUser === 'Superadmin')
                         <li class="nav-item">
-                            <a class="btn btn-outline-warning me-2" href="{{ route ('register.form') }}">Registrasi Admin</a>
+                            <a class="btn btn-outline-warning me-2" href="{{ route('admin.index') }}">Admin</a>
                         </li>
                     @endif
-                    {{-- KANAN: Tombol Logout --}}
+
                     @if (auth()->check())
                         <button onclick="logoutConfirm()" class="btn btn-outline-light">Logout</button>
-
-                        {{-- Form logout tersembunyi --}}
                         <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>

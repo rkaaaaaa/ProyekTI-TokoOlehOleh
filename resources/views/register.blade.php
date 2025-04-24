@@ -1,67 +1,71 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+@section('content')
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        .register-container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
+<div class="container mt-4">
+    <h4 class="fw-bold text-danger mb-4">Form Registrasi Admin Baru</h4>
 
-        .btn-register {
-            background-color: #D40000;
-            border: none;
-        }
+    <form id="formRegistrasi" action="{{ route('register.store') }}" method="POST">
+        @csrf
 
-        .btn-register:hover {
-            background-color: #a00000;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="register-container">
-        <h2 class="text-center text-danger">Register</h2>
-        <form action="{{ url('/register') }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label class="form-label">Nama User</label>
-                <input type="text" name="namaUser" class="form-control" placeholder="Masukkan nama" required>
+        {{-- Tampilkan error validasi --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" name="passwordUser" class="form-control" placeholder="Masukkan password" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Status User</label>
-                <select name="statusUser" class="form-select">
-                    <option value="Aktif">Aktif</option>
-                    <option value="Nonaktif">Nonaktif</option>
-                </select>
-            </div>
+        @endif
 
-            <!-- Menambahkan levelUser sebagai input tersembunyi -->
-            <input type="hidden" name="levelUser" value="Administrator">
+        <div class="mb-3">
+            <label for="namaUser" class="form-label">Nama Admin</label>
+            <input type="text" class="form-control" name="namaUser" maxlength="15" required value="{{ old('namaUser') }}">
+        </div>
 
-            <button type="submit" class="btn btn-register w-100 text-white">Daftar</button>
-        </form>
-    </div>
-</body>
+        <div class="mb-3">
+            <label for="passwordUser" class="form-label">Password</label>
+            <input type="password" class="form-control" name="passwordUser" minlength="6" required>
+        </div>
 
-</html>
+        <a href="{{ route('admin.index') }}" class="btn btn-secondary">Kembali</a>
+        <button type="submit" class="btn btn-custom">Tambah Admin</button>
+    </form>
+</div>
+
+<style>
+    .btn-custom {
+        background-color: red;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 30px;
+        font-weight: bold;
+        border: none;
+    }
+</style>
+
+<script>
+    // SweetAlert2 untuk konfirmasi submit
+    document.getElementById('formRegistrasi').addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Tambah Admin?',
+            text: 'Apakah kamu yakin ingin menambahkan admin baru?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Tambah!',
+            cancelButtonText: 'Batal',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#aaa'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                e.target.submit(); // Kirim form jika konfirmasi
+            }
+        });
+    });
+</script>
+
+@endsection

@@ -3,18 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use App\Models\MsUser;
+use App\Models\Toko;
+use App\Models\Produk;
+use App\Models\Testimoni;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Session::get('user'); // Ambil user dari session
+        $adminCount = Msuser::where('levelUser', 'Administrator')->count();
+        $tokoCount = Toko::count();
+        $produkCount = Produk::count();
+        $testimoniCount = Testimoni::count();
 
-        if (!$user) {
-            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
-        }
-
-        return view('dashboard', compact('user'));
+        return view('dashboard', compact('adminCount', 'tokoCount', 'produkCount', 'testimoniCount'));
     }
 }

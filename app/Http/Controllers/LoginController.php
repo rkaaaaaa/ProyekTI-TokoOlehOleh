@@ -27,20 +27,25 @@ class LoginController extends Controller
             'passwordUser' => 'required'
         ]);
 
-    // Cek apakah user ada di database
-    $user = MsUser::where('namaUser', $request->namaUser)
-        ->where('passwordUser', md5($request->passwordUser)) // Password MD5
-        ->first();
-        
+        // Cek apakah user ada di database
+        $user = MsUser::where('namaUser', $request->namaUser)
+            ->where('passwordUser', md5($request->passwordUser)) // Password MD5
+            ->first();
+
         if ($user) {
+            // cek status user
+            if ($user->statusUser !== 'Aktif') {
+                return redirect()->back()->with('error', 'Akun Anda tidak aktif. Silakan hubungi Superadmin.');
+            }
+
             // Set session user
             Auth::login($user); // Login menggunakan Auth
-        
+
             // Setelah login, arahkan berdasarkan level user
             if ($user->levelUser === 'Superadmin') {
                 return redirect()->route('dashboard');
             } elseif ($user->levelUser === 'Administrator') {
-                return redirect()->route('dashboard.produk');
+                return redirect()->route('dashboard');
             }
         } else {
             return redirect()->back()->with('error', 'Username atau password salah!');
