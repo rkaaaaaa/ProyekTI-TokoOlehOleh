@@ -46,7 +46,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="passwordUser" class="form-label">Password Baru (Opsional)</label>
+            <label for="passwordUser" class="form-label">Password Baru </label>
             <input type="password" name="passwordUser" id="passwordUser" class="form-control">
             <div class="form-text">Kosongkan jika tidak ingin mengganti password.</div>
         </div>

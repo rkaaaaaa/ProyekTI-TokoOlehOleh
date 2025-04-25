@@ -23,7 +23,7 @@ class UserController extends Controller
             'namaUser' => $request->namaUser,
             'passwordUser' => md5($request->passwordUser), // disesuaikan dengan field `passwordUser` (32 char md5)
             'levelUser' => 'Administrator', // default
-            'statusUser' => 'Aktif', // default
+            'statusUser' => $request->statusUser,
             'created_at' => now(),
             'updated_at' => now()
         ]);
