@@ -57,6 +57,18 @@
     <div class="row">
         <div class="col-md-7">
             <div class="rounded-box">
+
+                {{-- Pesan Error --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger mt-2">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <form id="formProduk" action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" oninput="updatePreview()">
                     @csrf
 
@@ -129,6 +141,8 @@
     // SweetAlert2 untuk konfirmasi submit
     document.getElementById('formProduk').addEventListener('submit', function(e) {
         e.preventDefault();
+        const form = this; // Simpan referensi form
+
         Swal.fire({
             title: 'Simpan Produk?',
             text: 'Apakah kamu yakin ingin menyimpan produk ini?',
@@ -140,7 +154,7 @@
             cancelButtonColor: '#aaa'
         }).then((result) => {
             if (result.isConfirmed) {
-                e.target.submit();
+                form.submit(); // Submit form secara manual
             }
         });
     });
