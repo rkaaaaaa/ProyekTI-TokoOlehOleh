@@ -12,13 +12,25 @@
 
             {{-- Tampilkan error validasi --}}
             @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: @if ($errors->has('namaUser'))
+                                'Username sudah digunakan.'
+                            @elseif ($errors->has('passwordUser'))
+                                'Password minimal 6 karakter.'
+                            @else
+                                'Terjadi kesalahan, coba lagi.'
+                            @endif ,
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    });
+                </script>
             @endif
 
             <div class="mb-3">
@@ -77,5 +89,4 @@
             });
         });
     </script>
-
 @endsection

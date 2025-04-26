@@ -12,11 +12,24 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $adminCount = Msuser::where('levelUser', 'Administrator')->count();
+        // Mengambil pesan error jika ada
+        $errorMessage = session('error');
+
+        $adminCount = MsUser::where('levelUser', 'Administrator')->count();
         $tokoCount = Toko::count();
         $produkCount = Produk::count();
         $testimoniCount = Testimoni::count();
 
-        return view('dashboard', compact('adminCount', 'tokoCount', 'produkCount', 'testimoniCount'));
+        // Ambil 10 produk terbaru
+        $produk = Produk::orderBy('idProduk', 'desc')->take(3)->get();
+
+        return view('dashboard', compact(
+            'adminCount',
+            'tokoCount',
+            'produkCount',
+            'testimoniCount',
+            'produk',
+            'errorMessage' // Menambahkan pesan error ke view
+        ));
     }
 }
