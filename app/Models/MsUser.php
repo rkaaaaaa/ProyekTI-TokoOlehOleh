@@ -20,7 +20,7 @@ class MsUser extends Authenticatable
 
     public function getAuthPassword()
     {
-        return $this->passwordUser; // Pastikan nama kolom sesuai
+        return $this->passwordUser; 
     }
 
     public function tokos()

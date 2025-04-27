@@ -1,121 +1,85 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-red: #D40000;
-            --hover-color: #FFD700;
-            --black: #222222;
-            --white: #ffffff;
-        }
+    <title>Navbar Tailwind</title>
 
-        .navbar {
-            background-color: var(--primary-red);
-            padding: 15px 0;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        .nav-link.active {
-            color: var(--hover-color) !important;
-            font-weight: 600;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-red': '#e60000',
+                        'hover-color': '#FFC300',
+                        'black': '#222222',
+                        'white': '#ffffff',
+                    }
+                }
+            }
         }
-
-
-        .navbar-brand img {
-            height: 50px;
-            transition: transform 0.2s ease;
-        }
-
-        .navbar-brand img:hover {
-            transform: scale(1.15);
-        }
-
-        .navbar-nav .nav-link {
-            color: var(--white);
-            font-weight: 500;
-            font-size: 16px;
-            margin: 0 15px;
-            transition: color 0.3s ease;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: var(--hover-color);
-        }
-
-        .navbar-nav .nav-link.active {
-            color: var(--hover-color) !important;
-            font-weight: 600;
-        }
-
-        .dropdown-menu {
-            background-color: var(--primary-red);
-            /* Tetap merah */
-            border: none;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        .dropdown-item {
-            color: var(--white);
-        }
-
-        .dropdown-item:hover,
-        .dropdown-item:focus {
-            background-color: var(--primary-red);
-            color: var(--hover-color);
-        }
-
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
-        .font-family {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
+    </script>
 </head>
 
-<body>
+<body class="font-sans bg-gray-100">
 
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('page.home') }}">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo">
-            </a>
+<!-- Navbar -->
+<nav class="bg-primary-red py-4 shadow-md fixed top-0 w-full z-50">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+        <!-- Logo -->
+        <a href="{{ route('page.home') }}" class="flex items-center">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-[50px] transition-transform hover:scale-110">
+        </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <!-- Hamburger button (Mobile) -->
+        <button id="menu-btn" class="lg:hidden text-white focus:outline-none">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="{{ route('page.home') }}" class="nav-link {{ Request::is('/') ? 'active' : '' }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('page.produk') }}" class="nav-link {{ Request::is('produk') ? 'active' : '' }}">Produk</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('kontak') }}" class="nav-link {{ Request::is('kontak') ? 'active' : '' }}">Kontak</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ Request::is('about*') ? 'active' : '' }}" href="#"
-                            role="button">Tentang Kami</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('sejarah') }}">Sejarah</a></li>
-                            <li><a class="dropdown-item" href="{{ route('page.lokasi') }}">Lokasi</a></li>
-                        </ul>
-                    </li>
-                </ul>
+        <!-- Menu Items -->
+        <div class="hidden lg:flex lg:items-center space-x-6" id="menu">
+            <a href="{{ route('page.home') }}" class="text-white font-medium hover:text-hover-color {{ Request::is('/') ? 'text-hover-color font-bold' : '' }}">Home</a>
+            <a href="{{ route('page.produk') }}" class="text-white font-medium hover:text-hover-color {{ Request::is('produk') ? 'text-hover-color font-bold' : '' }}">Produk</a>
+            <a href="{{ route('kontak') }}" class="text-white font-medium hover:text-hover-color {{ Request::is('kontak') ? 'text-hover-color font-bold' : '' }}">Kontak</a>
 
+            <!-- Dropdown -->
+            <div class="relative group">
+                <button class="text-white font-medium flex items-center gap-1 hover:text-hover-color">
+                    Tentang Kami
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.35a.75.75 0 111.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <div class="absolute hidden group-hover:block bg-primary-red rounded-md shadow-md w-40 mt-2">
+                    <a href="{{ route('sejarah') }}" class="block px-4 py-2 text-white hover:text-hover-color">Sejarah</a>
+                    <a href="{{ route('page.lokasi') }}" class="block px-4 py-2 text-white hover:text-hover-color">Lokasi</a>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Mobile Menu -->
+    <div class="hidden lg:hidden bg-primary-red text-white px-4 py-2 space-y-2" id="mobile-menu">
+        <a href="{{ route('page.home') }}" class="block hover:text-hover-color {{ Request::is('/') ? 'text-hover-color font-bold' : '' }}">Home</a>
+        <a href="{{ route('page.produk') }}" class="block hover:text-hover-color {{ Request::is('produk') ? 'text-hover-color font-bold' : '' }}">Produk</a>
+        <a href="{{ route('kontak') }}" class="block hover:text-hover-color {{ Request::is('kontak') ? 'text-hover-color font-bold' : '' }}">Kontak</a>
+        <a href="{{ route('sejarah') }}" class="block hover:text-hover-color">Sejarah</a>
+        <a href="{{ route('page.lokasi') }}" class="block hover:text-hover-color">Lokasi</a>
+    </div>
+</nav>
+
+<!-- JavaScript untuk Toggle Mobile Menu -->
+<script>
+    document.getElementById('menu-btn').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+</script>
 
 </body>
-
 </html>

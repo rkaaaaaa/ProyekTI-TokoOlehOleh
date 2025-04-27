@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ms_user', function (Blueprint $table) {
-            $table->increments('idUser');
+            $table->bigIncrements('idUser'); // custom name for ID
             $table->string('namaUser', 15)->unique();
             $table->string('passwordUser', 32);
             $table->enum('levelUser', ['Superadmin', 'Administrator']);
