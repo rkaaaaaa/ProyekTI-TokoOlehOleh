@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ms_toko', function (Blueprint $table) {
             $table->id('idToko'); // Primary key & auto increment
-            $table->unsignedBigInteger('idUser'); // foreign key
+            $table->unsignedBigInteger('idUser');
             $table->string('namaToko', 25);
             $table->string('alamatToko', 55);
 

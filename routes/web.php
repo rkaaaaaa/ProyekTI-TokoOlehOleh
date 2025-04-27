@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProdukUserController;
+// use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AdminManagementController;
 use App\Http\Middleware\SuperAdminMiddleware;
 use App\Http\Controllers\UserController;
@@ -19,13 +22,7 @@ use App\Http\Controllers\DashboardController;
 // ==========================
 // ROUTE UTAMA (FRONTEND)
 // ==========================
-Route::get('/', function () {
-    return view('home');
-})->name('page.home');
-
-Route::get('/produk', function () {
-    return view('userproduk');
-})->name('page.produk');
+Route::get('/', [HomeController::class, 'welcome'])->name('page.home');
 
 Route::get('/kontak', function () {
     return view('usercontact');
@@ -38,6 +35,11 @@ Route::get('/sejarah', function () {
 Route::get('/lokasi', function () {
     return view('userlokasi');
 })->name('page.lokasi');
+
+// User product routes
+Route::get('/produk', [ProdukUserController::class, 'index'])->name('produk.user');
+Route::get('/produk/search', [ProdukUserController::class, 'search'])->name('produk.search');
+Route::get('/produk/{id}', [ProdukUserController::class, 'detail'])->name('produk.detail');
 
 // ==========================
 // ROUTE AUTENTIKASI
@@ -95,4 +97,5 @@ Route::middleware('auth')->group(function () {
         Route::put('/{toko}', [TokoController::class, 'update'])->name('toko.update');
         Route::delete('/{toko}', [TokoController::class, 'destroy'])->name('toko.destroy');
     });
+
 });
