@@ -86,7 +86,7 @@
 
         <div class="hidden lg:flex space-x-8 items-center">
             <a href="{{ route('page.home') }}" class="text-white font-medium text-[16px] hover:text-hover-color">Beranda</a>
-            <a href="{{ route('produkuser.index') }}" class="text-white font-medium text-[16px] hover:text-hover-color">Produk</a>
+            <a href="{{ route('produk.user') }}" class="text-white font-medium text-[16px] hover:text-hover-color">Produk</a>
             <a href="{{ route('kontak') }}" class="text-white font-medium text-[16px] hover:text-hover-color">Kontak</a>
 
             <div class="relative group">
@@ -106,10 +106,10 @@
 
     <div x-show="open" @click.outside="open = false" x-transition class="lg:hidden bg-primary-red text-white py-2 px-4 space-y-2">
         <a href="{{ route('page.home') }}" class="block hover:text-hover-color">Beranda</a>
-        <a href="{{ route('produkuser.index') }}" class="block hover:text-hover-color">Produk</a>
+        <a href="{{ route('produk.user') }}" class="block hover:text-hover-color">Produk</a>
         <a href="{{ route('kontak') }}" class="block hover:text-hover-color">Kontak</a>
         <a href="{{ route('sejarah') }}" class="block hover:text-hover-color">Sejarah</a>
-        <a href="{{ route('lokasi') }}" class="block hover:text-hover-color">Lokasi</a>
+        <a href="{{ route('page.lokasi') }}" class="block hover:text-hover-color">Lokasi</a>
     </div>
 </nav>
 

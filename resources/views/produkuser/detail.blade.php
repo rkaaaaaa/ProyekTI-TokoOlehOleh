@@ -51,7 +51,7 @@
             
             <!-- Navigation -->
             <nav class="hidden md:flex space-x-8 text-xl font-semibold">
-                <a href="{{ route('home') }}" class="hover:text-yellow-300">Beranda</a>
+                <a href="{{ route('page.home') }}" class="hover:text-yellow-300">Beranda</a>
                 <a href="{{ route('produk.user') }}" class="hover:text-yellow-300">Produk</a>
                 <a href="{{ route('kontak') }}" class="hover:text-yellow-300">Kontak</a>
             </nav>
@@ -71,7 +71,7 @@
         <nav class="flex mb-8" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                 <li class="inline-flex items-center">
-                    <a href="{{ route('home') }}" class="text-gray-700 hover:text-brand-red">
+                    <a href="{{ route('page.home') }}" class="text-gray-700 hover:text-brand-red">
                         Beranda
                     </a>
                 </li>

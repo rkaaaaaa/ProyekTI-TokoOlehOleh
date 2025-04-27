@@ -45,7 +45,7 @@
         <!-- Menu Items -->
         <div class="hidden lg:flex lg:items-center space-x-6" id="menu">
             <a href="{{ route('page.home') }}" class="text-white font-medium hover:text-hover-color {{ Request::is('/') ? 'text-hover-color font-bold' : '' }}">Home</a>
-            <a href="{{ route('page.produk') }}" class="text-white font-medium hover:text-hover-color {{ Request::is('produk') ? 'text-hover-color font-bold' : '' }}">Produk</a>
+            <a href="{{ route('produk.user') }}" class="text-white font-medium hover:text-hover-color {{ Request::is('produk') ? 'text-hover-color font-bold' : '' }}">Produk</a>
             <a href="{{ route('kontak') }}" class="text-white font-medium hover:text-hover-color {{ Request::is('kontak') ? 'text-hover-color font-bold' : '' }}">Kontak</a>
 
             <!-- Dropdown -->
@@ -67,7 +67,7 @@
     <!-- Mobile Menu -->
     <div class="hidden lg:hidden bg-primary-red text-white px-4 py-2 space-y-2" id="mobile-menu">
         <a href="{{ route('page.home') }}" class="block hover:text-hover-color {{ Request::is('/') ? 'text-hover-color font-bold' : '' }}">Home</a>
-        <a href="{{ route('page.produk') }}" class="block hover:text-hover-color {{ Request::is('produk') ? 'text-hover-color font-bold' : '' }}">Produk</a>
+        <a href="{{ route('produk.user') }}" class="block hover:text-hover-color {{ Request::is('produk') ? 'text-hover-color font-bold' : '' }}">Produk</a>
         <a href="{{ route('kontak') }}" class="block hover:text-hover-color {{ Request::is('kontak') ? 'text-hover-color font-bold' : '' }}">Kontak</a>
         <a href="{{ route('sejarah') }}" class="block hover:text-hover-color">Sejarah</a>
         <a href="{{ route('page.lokasi') }}" class="block hover:text-hover-color">Lokasi</a>

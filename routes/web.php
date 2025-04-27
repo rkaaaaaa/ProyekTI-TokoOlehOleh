@@ -6,8 +6,13 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProdukUserController;
 // use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\AdminManagementController;
+use App\Http\Middleware\SuperAdminMiddleware;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\TokoController;
+use App\Http\Controllers\DashboardController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -44,15 +49,19 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Jika butuh register
-// Route::get('/register', [RegisterController::class, 'showForm'])->name('register.form');
-// Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
+Route::middleware(['auth', SuperAdminMiddleware::class])->group(function () {
+    Route::get('/register-admin', [UserController::class, 'create'])->name('register.form');
+    Route::post('/register-admin', [UserController::class, 'store'])->name('register.store');
+
+});
 
 // ==========================
 // ROUTE DASHBOARD (SETELAH LOGIN)
 // ==========================
 Route::middleware('auth')->group(function () {
-    // Redirect /dashboard ke halaman produk
-    Route::get('/dashboard', fn() => redirect()->route('dashboard.produk'))->name('dashboard');
+
+    // Sekarang tampilkan halaman dashboard:
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ======== PRODUK ========
     Route::get('/dashboard/produk', [ProdukController::class, 'index'])->name('dashboard.produk');
