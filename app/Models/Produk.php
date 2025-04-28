@@ -19,7 +19,7 @@ class Produk extends Model
         'hargaProduk',
         'gambarProduk',
         'deskripsiProduk',
-        'kategoriProduk'
+        'kategoriProduk',
+        'varian',          
     ];
 }
-

@@ -49,12 +49,12 @@
                         <input type="number" name="idUser" class="form-control" placeholder="ID User" required>
                     </div> --}}
                     
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label class="form-label">ID User</label>
                         <input type="text" class="form-control" value="{{ Auth::id() }}" readonly>
                         <input type="hidden" name="idUser" value="{{ Auth::id() }}">
                     </div>
-                    
+                    --}}
 
                     <div class="mb-3">
                         <label for="gambarTestimoni" class="form-label">Gambar</label>

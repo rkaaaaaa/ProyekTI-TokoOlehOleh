@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('gambarProduk', 55);
             $table->text('deskripsiProduk')->nullable();
             $table->enum('kategoriProduk', ['Sambel', 'Makanan']);
+
         });
     }
 

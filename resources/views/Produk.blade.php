@@ -25,6 +25,10 @@
             padding: 5px 10px;
             border-radius: 12px;
         }
+
+        .pagination {
+            justify-content: center;
+        }
     </style>
 
     <div class="container mt-4">
@@ -48,6 +52,7 @@
                         <th>Gambar</th>
                         <th>Nama Produk</th>
                         <th>Kategori</th>
+                        <th>Varian</th>
                         <th>Harga</th>
                         <th>Deskripsi</th>
                         <th>Aksi</th>
@@ -56,12 +61,19 @@
                 <tbody>
                     @forelse($produk as $index => $item)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
+                            <td>{{ ($produk->currentPage() - 1) * $produk->perPage() + $index + 1 }}</td>
                             <td>
                                 <img src="{{ asset('storage/' . $item->gambarProduk) }}" alt="{{ $item->namaProduk }}" style="max-width: 100px; border-radius: 6px;">
                             </td>
                             <td>{{ $item->namaProduk }}</td>
                             <td>{{ $item->kategoriProduk }}</td>
+                            <td>
+                                @if($item->kategoriProduk == 'Sambel' && $item->varian)
+                                    {{ $item->varian }}
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td>Rp {{ number_format($item->hargaProduk, 0, ',', '.') }}</td>
                             <td>{{ $item->deskripsiProduk }}</td>
                             <td>
@@ -80,11 +92,15 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7">Belum ada data produk.</td>
+                            <td colspan="8">Belum ada data produk.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
+
+            <div class="d-flex justify-content-end mt-3">
+                {{ $produk->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
 

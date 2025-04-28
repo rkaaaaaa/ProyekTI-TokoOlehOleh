@@ -22,11 +22,11 @@
         @endif
 
         {{-- ID User otomatis --}}
-        <div class="mb-3">
+        {{-- <div class="mb-3">
             <label class="form-label">ID User</label>
             <input type="text" class="form-control" value="{{ Auth::id() }}" readonly>
             <input type="hidden" name="idUser" value="{{ Auth::id() }}">
-        </div>
+        </div> --}}
 
         <div class="mb-3">
             <label for="namaToko" class="form-label">Nama Toko</label>

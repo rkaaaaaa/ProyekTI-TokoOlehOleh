@@ -3,6 +3,9 @@
 @section('content')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- Menambahkan CDN Font Awesome untuk ikon -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 <style>
     .rounded-box {
         border: 2px solid #ccc;
@@ -20,9 +23,33 @@
         background-color: red;
         color: white;
         border-radius: 25px;
-        padding: 10px 30px;
+        padding: 10px 20px;
         font-weight: bold;
         border: none;
+    }
+
+    .btn-back {
+        background-color: #6c757d; /* Warna abu-abu gelap */
+        color: white;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-weight: bold;
+        border: none;
+    }
+
+    .btn-save {
+        background-color: red; /* Warna merah untuk tombol Simpan */
+        color: white;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-weight: bold;
+        border: none;
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
     }
 
     .preview-card {
@@ -69,14 +96,8 @@
                     </div>
                 @endif
 
-                <form id="formProduk" action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" oninput="updatePreview()">
+                <form id="formProduk" action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-
-                    <div class="mb-3">
-                        <label class="form-label">ID User</label>
-                        <input type="text" class="form-control" value="{{ Auth::id() }}" readonly>
-                        <input type="hidden" name="idUser" value="{{ Auth::id() }}">
-                    </div>
 
                     <div class="mb-3">
                         <label for="gambarProduk" class="form-label">Gambar Produk</label>
@@ -84,29 +105,48 @@
                     </div>
 
                     <div class="mb-3">
-                        <input type="text" name="namaProduk" id="namaProduk" class="form-control" placeholder="Nama Produk" required>
+                        <input type="text" name="namaProduk" id="namaProduk" class="form-control" placeholder="Nama Produk" oninput="updatePreview()" required>
                     </div>
 
                     <div class="mb-3">
-                        <select name="kategoriProduk" id="kategoriProduk" class="form-control" onchange="updatePreview()" required>
+                        <select name="kategoriProduk" id="kategoriProduk" class="form-control" onchange="toggleVarian(); updatePreview()" required>
                             <option value="">-- Pilih Kategori --</option>
                             <option value="Sambel">Sambel</option>
                             <option value="Makanan">Makanan</option>
                         </select>
                     </div>
 
+                    <!-- Tambahan: Dropdown Varian -->
                     <div class="mb-3">
-                        <input type="number" name="hargaProduk" id="hargaProduk" class="form-control" placeholder="Harga" required>
+                        <select name="varian" id="varianProduk" class="form-control" disabled>
+                            <option value="">-- Pilih Varian --</option>
+                            <option value="Sedang">Sedang</option>
+                            <option value="Pedas">Pedas</option>
+                            <option value="Extra Pedas">Extra Pedas</option>
+                        </select>
                     </div>
 
                     <div class="mb-3">
-                        <textarea name="deskripsiProduk" id="deskripsiProduk" class="form-control" placeholder="Deskripsi Produk" rows="4" required></textarea>
+                        <input type="number" name="hargaProduk" id="hargaProduk" class="form-control" placeholder="Harga" oninput="updatePreview()" required>
                     </div>
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-custom">Simpan</button>
+                    <div class="mb-3">
+                        <textarea name="deskripsiProduk" id="deskripsiProduk" class="form-control" placeholder="Deskripsi Produk" rows="4" oninput="updatePreview()" required></textarea>
+                    </div>
+
+                    <div class="btn-group">
+                        <!-- Tombol Simpan -->
+                        <button type="submit" class="btn btn-save">
+                            <i class="fas fa-save"></i> Simpan
+                        </button>
+
+                        <!-- Tombol Kembali -->
+                        <a href="{{ url('/dashboard/produk') }}" class="btn btn-back">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
                     </div>
                 </form>
+
             </div>
         </div>
 
@@ -115,7 +155,8 @@
                 <h5>Preview Produk</h5>
                 <img id="previewImage" src="{{ asset('assets/placeholder.png') }}" class="preview-img" alt="Preview">
                 <p><strong>Nama Produk:</strong> <span id="previewNama">-</span></p>
-                <p><strong>Kategori:</strong> <span id="previewVarian">-</span></p>
+                <p><strong>Kategori:</strong> <span id="previewKategori">-</span></p>
+                <p><strong>Varian:</strong> <span id="previewVarian">-</span></p>
                 <p><strong>Harga:</strong> <span id="previewHarga">Rp -</span></p>
             </div>
         </div>
@@ -125,24 +166,33 @@
 <script>
     function previewImage(event) {
         const file = event.target.files[0];
-        const preview = document.getElementById('previewImage');
         if (file) {
-            preview.src = URL.createObjectURL(file);
+            document.getElementById('previewImage').src = URL.createObjectURL(file);
+        }
+    }
+
+    function toggleVarian() {
+        const kat = document.getElementById('kategoriProduk').value;
+        const varSel = document.getElementById('varianProduk');
+        if (kat === 'Sambel') {
+            varSel.removeAttribute('disabled');
+        } else {
+            varSel.value = '';
+            varSel.setAttribute('disabled', 'disabled');
         }
     }
 
     function updatePreview() {
         document.getElementById('previewNama').textContent = document.getElementById('namaProduk').value || '-';
-        document.getElementById('previewVarian').textContent = document.getElementById('kategoriProduk').value || '-';
+        document.getElementById('previewKategori').textContent = document.getElementById('kategoriProduk').value || '-';
+        document.getElementById('previewVarian').textContent = document.getElementById('varianProduk').value || '-';
         const harga = document.getElementById('hargaProduk').value;
         document.getElementById('previewHarga').textContent = harga ? 'Rp ' + harga : 'Rp -';
     }
 
-    // SweetAlert2 untuk konfirmasi submit
     document.getElementById('formProduk').addEventListener('submit', function(e) {
         e.preventDefault();
-        const form = this; // Simpan referensi form
-
+        const form = this;
         Swal.fire({
             title: 'Simpan Produk?',
             text: 'Apakah kamu yakin ingin menyimpan produk ini?',
@@ -154,9 +204,13 @@
             cancelButtonColor: '#aaa'
         }).then((result) => {
             if (result.isConfirmed) {
-                form.submit(); // Submit form secara manual
+                form.submit();
             }
         });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        toggleVarian();
     });
 </script>
 @endsection

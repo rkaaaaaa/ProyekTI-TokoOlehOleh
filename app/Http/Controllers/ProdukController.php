@@ -11,7 +11,7 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        $produk = Produk::all();
+        $produk = Produk::orderBy('idProduk', 'desc')->paginate(5);
         return view('Produk', compact('produk'));
     }
 
@@ -23,25 +23,31 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'namaProduk' => 'required|string|max:50',
-            'hargaProduk' => 'required|integer',
-            'gambarProduk' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'deskripsiProduk' => 'required|string',
-            'kategoriProduk' => 'required|string'
+            'namaProduk'     => 'required|string|max:50',
+            'hargaProduk'    => 'required|integer',
+            'gambarProduk'   => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'deskripsiProduk'=> 'required|string',
+            'kategoriProduk' => 'required|in:Sambel,Makanan',
+            // varian wajib jika kategori "Sambel"
+            'varian'         => 'required_if:kategoriProduk,Sambel|in:Sedang,Pedas,Extra Pedas',
         ]);
 
+        // upload gambar
         $gambarPath = $request->file('gambarProduk')->store('produk', 'public');
 
         Produk::create([
-            'idUser' => Auth::id(),
-            'namaProduk' => $request->namaProduk,
-            'hargaProduk' => $request->hargaProduk,
-            'gambarProduk' => $gambarPath,
-            'deskripsiProduk' => $request->deskripsiProduk,
-            'kategoriProduk' => $request->kategoriProduk
+            'idUser'         => Auth::id(),
+            'namaProduk'     => $request->namaProduk,
+            'hargaProduk'    => $request->hargaProduk,
+            'gambarProduk'   => $gambarPath,
+            'deskripsiProduk'=> $request->deskripsiProduk,
+            'kategoriProduk' => $request->kategoriProduk,
+            'varian'         => $request->varian,   // simpan varian
         ]);
 
-        return redirect()->route('dashboard.produk')->with('success', 'Produk berhasil ditambahkan');
+        return redirect()
+            ->route('dashboard.produk')
+            ->with('success', 'Produk berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -55,29 +61,34 @@ class ProdukController extends Controller
         $produk = Produk::findOrFail($id);
 
         $request->validate([
-            'namaProduk' => 'required|string|max:50',
-            'hargaProduk' => 'required|integer',
-            'gambarProduk' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'deskripsiProduk' => 'required|string',
-            'kategoriProduk' => 'required|string'
+            'namaProduk'     => 'required|string|max:50',
+            'hargaProduk'    => 'required|integer',
+            'gambarProduk'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'deskripsiProduk'=> 'required|string',
+            'kategoriProduk' => 'required|in:Sambel,Makanan',
+            'varian'         => 'required_if:kategoriProduk,Sambel|in:Sedang,Pedas,Extra Pedas',
         ]);
 
+        // handle upload baru jika ada
         if ($request->hasFile('gambarProduk')) {
             if ($produk->gambarProduk) {
                 Storage::disk('public')->delete($produk->gambarProduk);
             }
-            $gambarPath = $request->file('gambarProduk')->store('produk', 'public');
-            $produk->gambarProduk = $gambarPath;
+            $produk->gambarProduk = $request->file('gambarProduk')->store('produk', 'public');
         }
 
+        // update semua field
         $produk->update([
-            'namaProduk' => $request->namaProduk,
-            'hargaProduk' => $request->hargaProduk,
-            'deskripsiProduk' => $request->deskripsiProduk,
-            'kategoriProduk' => $request->kategoriProduk
+            'namaProduk'     => $request->namaProduk,
+            'hargaProduk'    => $request->hargaProduk,
+            'deskripsiProduk'=> $request->deskripsiProduk,
+            'kategoriProduk' => $request->kategoriProduk,
+            'varian'         => $request->varian, 
         ]);
 
-        return redirect()->route('dashboard.produk')->with('success', 'Produk berhasil diperbarui');
+        return redirect()
+            ->route('dashboard.produk')
+            ->with('success', 'Produk berhasil diperbarui');
     }
 
     public function destroy($id)
@@ -90,6 +101,8 @@ class ProdukController extends Controller
 
         $produk->delete();
 
-        return redirect()->route('dashboard.produk')->with('success', 'Produk berhasil dihapus');
+        return redirect()
+            ->route('dashboard.produk')
+            ->with('success', 'Produk berhasil dihapus');
     }
 }
