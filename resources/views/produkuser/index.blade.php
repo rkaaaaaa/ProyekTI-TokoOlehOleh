@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sambel Pecel Madiun ASLI SELO - Kualitas Premium</title>
+    <title>Sambel Pecel Madiun Asli Selo</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -24,7 +25,7 @@
         
         body::before {
             content: "";
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -33,6 +34,8 @@
             background-repeat: repeat;
             opacity: 0.1;
             z-index: -1;
+            transition: transform 3000ms ease-in-out;
+
         }
         
         .product-card {
@@ -44,20 +47,9 @@
         }
     </style>
 </head>
-<body class="font-sans">
-    <!-- Header -->
-    <header class="bg-brand-red text-white py-4">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo Sambel Pecel Madiun" class="h-16">
-            </div>
-            
+<body class="font-poppins">
             <!-- Navigation -->
-            <nav class="hidden md:flex space-x-8 text-xl font-semibold">
-                <a href="{{ route('page.home') }}" class="hover:text-yellow-300">Beranda</a>
-                <a href="{{ route('produk.user') }}" class="hover:text-yellow-300">Produk</a>
-                <a href="{{ route('kontak') }}" class="hover:text-yellow-300">Kontak</a>
-            </nav>
+                @include('nav_user')
             
             <!-- Mobile Menu Button -->
             <button class="md:hidden text-white">
@@ -85,51 +77,60 @@
         <!-- Category Filter -->
         <div class="flex justify-center mb-8">
             <div class="flex space-x-4">
-                <a href="{{ route('produk.user') }}" class="px-4 py-2 rounded-full {{ request()->routeIs('produk.user') && !request('kategori') ? 'bg-brand-red text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                <a href="{{ route('produk.user') }}" class="px-4 py-2 rounded-full {{ request()->routeIs('produk.user') && !request('kategori') ? 'bg-primary-red text-white border-2 border-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
                     Semua
                 </a>
-                <a href="{{ route('produk.user', ['kategori' => 'Sambel']) }}" class="px-4 py-2 rounded-full {{ request('kategori') == 'Sambel' ? 'bg-brand-red text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                <a href="{{ route('produk.user', ['kategori' => 'Sambel']) }}" class="px-4 py-2 rounded-full {{ request('kategori') == 'Sambel' ? 'bg-primary-red text-white border-2 border-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
                     Sambel
                 </a>
-                <a href="{{ route('produk.user', ['kategori' => 'Makanan']) }}" class="px-4 py-2 rounded-full {{ request('kategori') == 'Makanan' ? 'bg-brand-red text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                <a href="{{ route('produk.user', ['kategori' => 'Makanan']) }}" class="px-4 py-2 rounded-full {{ request('kategori') == 'Makanan' ? 'bg-primary-red text-white border-2 border-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
                     Makanan
                 </a>
             </div>
         </div>
         
+        
         <!-- Products Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($produk as $item)
-            <div class="product-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-                <div class="p-4">
-                    <img src="{{ asset('storage/' . $item->gambarProduk) }}" alt="{{ $item->namaProduk }}" class="w-full h-48 object-contain mx-auto">
-                    <h3 class="text-xl font-bold mt-4">{{ $item->namaProduk }}</h3>
-                    
+            <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
+                <a href="{{ route('produk.detail', $item->idProduk) }}">
+                    <img class="p-8 rounded-t-lg h-48 object-contain mx-auto" src="{{ asset('storage/' . $item->gambarProduk) }}" alt="{{ $item->namaProduk }}">
+                </a>
+                <div class="px-5 pb-5">
+                    <a href="{{ route('produk.detail', $item->idProduk) }}">
+                        <h5 class="text-xl font-semibold tracking-tight text-gray-900">{{ $item->namaProduk }}</h5>
+                    </a>
+        
                     @if(strpos($item->namaProduk, 'Sambel') !== false && strpos($item->deskripsiProduk, 'Varian:') !== false)
                         @php
                             preg_match('/Varian:\s*(.*?)(?:\s*\.|$)/i', $item->deskripsiProduk, $matches);
                             $varian = isset($matches[1]) ? $matches[1] : '';
                         @endphp
-                        
                         @if($varian)
                         <div class="mt-1">
-                            <span>Varian:</span>
+                            <span>Varian: </span>
                             <span class="font-bold">{{ $varian }}</span>
                         </div>
                         @endif
                     @endif
-                    
-                    <div class="mt-4">
-                        <span class="text-2xl font-bold">Rp{{ number_format($item->hargaProduk, 0, ',', '.') }}</span>
+        
+                    <div class="flex items-center mt-2.5 mb-5">
+                        <div class="flex items-center space-x-1">
+                            <!-- Bintang rating dummy -->
+                            @for($i = 0; $i < 5; $i++)
+                            <svg class="w-4 h-4 text-yellow-300" fill="currentColor" viewBox="0 0 22 20">
+                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03 3.656-3.563a1.523 1.523 0 0 0 .387-1.575Z"/>
+                            </svg>
+                            @endfor
+                        </div>
                     </div>
-                    
-                    <div class="mt-4 flex space-x-2">
-                        <a href="{{ route('produk.detail', $item->idProduk) }}" class="bg-brand-red text-white px-4 py-2 rounded-md text-sm hover:bg-red-700 flex-1 text-center">
-                            Detail
+        
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-gray-900">Rp{{ number_format($item->hargaProduk, 0, ',', '.') }}</span>
+                        <a href="{{ route('produk.detail', $item->idProduk) }}" class="text-white bg-primary-red hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            Lihat Detail
                         </a>
-                        <button onclick="addToCart({{ $item->idProduk }})" class="bg-gray-800 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-900 flex-1">
-                            Beli
-                        </button>
                     </div>
                 </div>
             </div>
@@ -148,38 +149,15 @@
         @endif
     </main>
     
-    <!-- Footer -->
-    <footer class="bg-brand-red text-white py-6 mt-12">
+    <footer class="bg-[#e60000] text-white py-6 text-center font-bold z-10">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Tentang Kami</h3>
-                    <p>Sambel Pecel Madiun ASLI SELO menyediakan berbagai oleh-oleh khas Madiun dengan kualitas premium dan rasa autentik.</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Kontak</h3>
-                    <p>Jl. Pahlawan No. 123, Madiun</p>
-                    <p>Telp: 0351-123456</p>
-                    <p>Email: info@asliselo.com</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Jam Operasional</h3>
-                    <p>Senin - Sabtu: 08.00 - 17.00</p>
-                    <p>Minggu: 09.00 - 15.00</p>
-                </div>
-            </div>
-            <div class="mt-8 text-center">
-                <p>&copy; {{ date('Y') }} Sambel Pecel Madiun ASLI SELO. All rights reserved.</p>
-            </div>
+            <p>&copy; {{ date('Y') }} Sambel Pecel Madiun Asli Selo. All Rights Reserved.</p>
+            <p class="text-xs mt-2">Designed by Information Technology, Politeknik Negeri Madiun '23</p>
         </div>
     </footer>
 
     <script>
-        function addToCart(productId) {
-            // Implementasi fungsi untuk menambahkan produk ke keranjang
-            // Bisa menggunakan AJAX untuk mengirim request ke server
-            alert('Produk ditambahkan ke keranjang!');
-        }
+        // Script untuk fungsi lain jika diperlukan
     </script>
 </body>
 </html>
