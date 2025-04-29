@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $produk->namaProduk }} - Sambel Pecel Madiun ASLI SELO</title>
+    <title>{{ $produk->namaProduk }} - Sambel Pecel Madiun Asli Selo</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,8 +12,14 @@
             theme: {
                 extend: {
                     colors: {
-                        'brand-red': '#d80000',
-                    }
+                        'primary-red': '#e60000',
+                        '[#FFC300]': '#FFC300',
+                        'white': '#ffffff',
+                        'black': '#222222',
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
                 }
             }
         }
@@ -34,27 +41,12 @@
             opacity: 0.1;
             z-index: -1;
         }
+
     </style>
 </head>
-<body class="font-sans">
-    <!-- Header -->
-    <header class="bg-brand-red text-white py-4">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo Sambel Pecel Madiun" class="h-16">
-                <div class="ml-2">
-                    <h1 class="text-xl font-bold">Sambel Pecel Madiun</h1>
-                    <h2 class="text-2xl font-bold text-yellow-300">ASLI SELO</h2>
-                    <p class="text-sm">Kualitas Premium</p>
-                </div>
-            </div>
-            
-            <!-- Navigation -->
-            <nav class="hidden md:flex space-x-8 text-xl font-semibold">
-                <a href="{{ route('page.home') }}" class="hover:text-yellow-300">Beranda</a>
-                <a href="{{ route('produk.user') }}" class="hover:text-yellow-300">Produk</a>
-                <a href="{{ route('kontak') }}" class="hover:text-yellow-300">Kontak</a>
-            </nav>
+<body class="font-poppins">            
+    <!-- Navigation -->
+            @include('nav_user')
             
             <!-- Mobile Menu Button -->
             <button class="md:hidden text-white">
@@ -71,7 +63,7 @@
         <nav class="flex mb-8" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                 <li class="inline-flex items-center">
-                    <a href="{{ route('page.home') }}" class="text-gray-700 hover:text-brand-red">
+                    <a href="{{ route('page.home') }}" class="text-gray-700 hover:text-primary-red">
                         Beranda
                     </a>
                 </li>
@@ -80,7 +72,7 @@
                         <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                         </svg>
-                        <a href="{{ route('produk.user') }}" class="ml-1 text-gray-700 hover:text-brand-red md:ml-2">
+                        <a href="{{ route('produk.user') }}" class="ml-1 text-gray-700 hover:text-primary-red md:ml-2">
                             Produk
                         </a>
                     </div>
@@ -121,7 +113,7 @@
                     @endif
                 @endif
                 
-                <div class="text-3xl font-bold text-brand-red mb-6">
+                <div class="text-3xl font-bold text-primary-red mb-6">
                     Rp{{ number_format($produk->hargaProduk, 0, ',', '.') }}
                 </div>
                 
@@ -137,16 +129,31 @@
                     </span>
                 </div>
                 
-                <div class="flex space-x-4">
-                    <div class="w-1/3">
+                <div class="flex flex-col space-y-4">
+                    <div class="w-full">
                         <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
-                        <input type="number" id="quantity" name="quantity" min="1" value="1" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-red">
+                        <input type="number" id="quantity" name="quantity" min="1" value="1" 
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-red h-[42px]">
                     </div>
-                    
-                    <button onclick="addToCart({{ $produk->idProduk }})" class="flex-1 bg-brand-red text-white px-6 py-2 rounded-md font-semibold hover:bg-red-700">
-                        Tambahkan ke Keranjang
-                    </button>
+                
+                    <div class="flex space-x-4">
+                        <a href="#" onclick="orderViaWhatsApp()" 
+                            class="flex-1 bg-green-600 text-white px-6 rounded-md font-semibold hover:bg-green-700 flex items-center justify-center h-[42px]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                            </svg>
+                            Pesan via WhatsApp
+                        </a>
+                
+                        <a href="https://www.tokopedia.com/asliselo" target="_blank" 
+                            class="flex-1 bg-green-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-green-600 flex items-center justify-center h-[42px]">
+                            <img src="{{ asset('images/logo-tokopedia.png') }}" alt="Tokopedia" style="width: 45px; height: 45px; margin-right: 8px;">
+                            Beli di Tokopedia
+                        </a>
+                    </div>
                 </div>
+                
+                
             </div>
         </div>
         
@@ -156,62 +163,67 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($related as $item)
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition duration-300">
                     <div class="p-4">
-                        <img src="{{ asset('storage/' . $item->gambarProduk) }}" alt="{{ $item->namaProduk }}" class="w-full h-48 object-contain mx-auto">
-                        <h3 class="text-xl font-bold mt-4">{{ $item->namaProduk }}</h3>
+                        <a href="{{ route('produk.detail', $item->idProduk) }}">
+                            <img src="{{ asset('storage/' . $item->gambarProduk) }}" alt="{{ $item->namaProduk }}" class="w-full h-48 object-contain mx-auto">
+                        </a>
                         
-                        <div class="mt-4">
+                        <a href="{{ route('produk.detail', $item->idProduk) }}">
+                            <h3 class="text-xl font-bold mt-4 text-center">{{ $item->namaProduk }}</h3>
+                        </a>
+                        
+                        <div class="flex items-center justify-center mt-2.5 mb-5">
+                            <div class="flex items-center space-x-1">
+                                <!-- Bintang rating dummy -->
+                                @for($i = 0; $i < 5; $i++)
+                                <svg class="w-4 h-4 text-yellow-300" fill="currentColor" viewBox="0 0 22 20">
+                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03 3.656-3.563a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                </svg>
+                                @endfor
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mb-4">
                             <span class="text-2xl font-bold">Rp{{ number_format($item->hargaProduk, 0, ',', '.') }}</span>
                         </div>
                         
-                        <div class="mt-4 flex space-x-2">
-                            <a href="{{ route('produk.detail', $item->idProduk) }}" class="bg-brand-red text-white px-4 py-2 rounded-md text-sm hover:bg-red-700 flex-1 text-center">
-                                Detail
+                        <div class="mt-4">
+                            <a href="{{ route('produk.detail', $item->idProduk) }}" class="bg-primary-red text-white px-4 py-2 rounded-md text-sm hover:bg-red-700 block w-full text-center">
+                                Lihat Detail
                             </a>
-                            <button onclick="addToCart({{ $item->idProduk }})" class="bg-gray-800 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-900 flex-1">
-                                Beli
-                            </button>
                         </div>
                     </div>
                 </div>
                 @endforeach
             </div>
         </div>
+                
     </main>
-    
-    <!-- Footer -->
-    <footer class="bg-brand-red text-white py-6 mt-12">
+    <footer class="bg-[#e60000] text-white py-6 text-center font-bold z-10">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Tentang Kami</h3>
-                    <p>Sambel Pecel Madiun ASLI SELO menyediakan berbagai oleh-oleh khas Madiun dengan kualitas premium dan rasa autentik.</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Kontak</h3>
-                    <p>Jl. Pahlawan No. 123, Madiun</p>
-                    <p>Telp: 0351-123456</p>
-                    <p>Email: info@asliselo.com</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Jam Operasional</h3>
-                    <p>Senin - Sabtu: 08.00 - 17.00</p>
-                    <p>Minggu: 09.00 - 15.00</p>
-                </div>
-            </div>
-            <div class="mt-8 text-center">
-                <p>&copy; {{ date('Y') }} Sambel Pecel Madiun ASLI SELO. All rights reserved.</p>
-            </div>
+            <p>&copy; {{ date('Y') }} Sambel Pecel Madiun Asli Selo. All Rights Reserved.</p>
+            <p class="text-xs mt-2">Designed by Information Technology, Politeknik Negeri Madiun '23</p>
         </div>
     </footer>
 
     <script>
-        function addToCart(productId) {
+        function orderViaWhatsApp() {
             const quantity = document.getElementById('quantity')?.value || 1;
-            // Implementasi fungsi untuk menambahkan produk ke keranjang
-            // Bisa menggunakan AJAX untuk mengirim request ke server
-            alert(`${quantity} produk ditambahkan ke keranjang!`);
+            const productName = "{{ $produk->namaProduk }}";
+            const productPrice = "{{ number_format($produk->hargaProduk, 0, ',', '.') }}";
+            
+            // Format pesan WhatsApp
+            const message = `Halo, saya ingin memesan:\n\n*${productName}*\nJumlah: ${quantity}\nHarga: Rp${productPrice}/pcs\n\nMohon informasi lebih lanjut. Terima kasih.`;
+            
+            // Encode pesan untuk URL
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Ganti nomor WhatsApp sesuai kebutuhan
+            const phoneNumber = "6285607141421"; // Ganti dengan nomor WhatsApp toko
+            
+            // Buka WhatsApp dengan pesan yang sudah disiapkan
+            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
         }
     </script>
 </body>

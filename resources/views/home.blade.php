@@ -66,6 +66,46 @@
             margin-bottom: 100px;
         }
 
+                @keyframes fadeUp {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        }
+        @keyframes backgroundMove {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(10px);
+        }
+        }
+
+        .animate-fade-up {
+            animation: fadeUp 0.8s ease-out both;
+        }
+        .animate-fade-up.delay-200 {
+            animation-delay: 0.2s;
+        }
+        .animate-fade-up.delay-400 {
+            animation-delay: 0.4s;
+        }
+
+        .animate-backgroundMove {
+            animation: backgroundMove 6s ease-in-out infinite;
+        }
+
+        .translate-y-10 {
+            transform: translateY(40px);
+        }
+        .translate-y-3 {
+            transform: translateY(12px);
+        }
+
 
     </style>
 </head>
@@ -74,7 +114,7 @@
 <nav :class="scrolled ? 'bg-primary-red shadow-md' : 'bg-transparent'" class="fixed top-0 w-full transition-all duration-300 z-50">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <a href="{{ route('page.home') }}" class="navbar-brand transition-transform duration-200 hover:scale-110">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-[70px]">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-[55px]">
         </a>
 
         <button @click="open = !open" class="lg:hidden focus:outline-none">
@@ -96,9 +136,9 @@
                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.35a.75.75 0 111.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                     </svg>
                 </button>
-                <div class="absolute hidden group-hover:block mt-2 bg-primary-red rounded-md shadow-md w-40 z-50">
-                    <a href="{{ route('sejarah') }}" class="block px-4 py-2 text-white hover:text-hover-color">Sejarah</a>
-                    <a href="{{ route('page.lokasi') }}" class="block px-4 py-2 text-white hover:text-hover-color">Lokasi</a>
+                <div class="absolute opacity-0 invisible group-hover:opacity-100 group-hover:visible transform scale-95 group-hover:scale-100 transition-all duration-300 ease-in-out mt-2 bg-primary-red rounded-md shadow-md w-40 z-50">
+                    <a href="{{ route('sejarah') }}" class="block px-4 py-2 text-white hover:text-hover-color {{ Request::is('sejarah') ? 'text-hover-color font-bold' : '' }}">Sejarah</a>
+                    <a href="{{ route('page.lokasi') }}" class="block px-4 py-2 text-white hover:text-hover-color {{ Request::is('lokasi') ? 'text-hover-color font-bold' : '' }}">Lokasi</a>
                 </div>
             </div>
         </div>
@@ -123,7 +163,9 @@ style="background-image: url('/your-default-image.jpg');">
     <h1 class="text-4xl md:text-5xl font-bold mb-4">Sambel Pecel Madiun Asli Selo</h1>
     <p class="text-xl mb-8">Pedas, gurih, dan khas, cocok untuk semua hidangan!</p>
     <a href="https://wa.me/6285708945396"
-        class="bg-primary-red hover:bg-red-600 text-white font-bold py-3 px-8 rounded-md inline-block">
+    target="_blank" 
+    rel="noopener noreferrer" 
+    class="bg-primary-red text-white font-bold py-2 px-6 rounded-md inline-block transform transition-transform duration-300 hover:scale-105">
         Pesan Sekarang!
     </a>
 </div>
@@ -133,25 +175,31 @@ style="background-image: url('/your-default-image.jpg');">
 
 <section id="produk" class="product-section py-16 bg-primary-red text-white relative overflow-hidden white-vectors">
     <!-- Vector Elements -->
-    <div class="vector"><img src="{{ asset('images/texture2.png') }}" alt="texture"></div>
+    <div class="vector absolute top-0 left-0 w-full h-full opacity-20 transition-transform duration-[3000ms] ease-in-out" id="backgroundVector">
+        <img src="{{ asset('images/texture2.png') }}" alt="texture" class="w-full h-full object-cover">
+    </div>
 
     <div class="container mx-auto px-4 md:px-8 relative z-10">
-        <h2 class="text-4xl font-bold text-left mt-30">Produk Kami</h2>
+        <h2 class="text-4xl font-bold text-left mt-30 opacity-0 translate-y-10 transition-all duration-700 ease-out" id="produkTitle">
+            Produk Kami
+        </h2>
         <div class="flex flex-col md:flex-row items-start gap-10">
-            <div class="md:w-1/2 flex flex-col justify-start mt-5">
+            <div class="md:w-1/2 flex flex-col justify-start mt-5 opacity-0 translate-y-10 transition-all duration-700 ease-out delay-200" id="produkDesc">
                 <p class="text-lg leading-relaxed">
                     Sambal kacang premium dibuat dari kacang pilihan, gula merah, cabai, dan daun jeruk, 
                     menghasilkan rasa gurih, manis, dan pedas dengan aroma khas yang menggugah selera. 
                     <br>Cocok untuk sate, siomay, dan hidangan favoritmu!
                 </p>
             </div>
-            <div class="md:w-1/2 flex justify-end">
+            <div class="md:w-1/2 flex justify-end opacity-0 translate-y-10 transition-all duration-700 ease-out delay-400" id="produkImg">
                 <img src="{{ asset('images/produk.png') }}" alt="Sambel Pecel Madiun"
                     class="w-full max-w-[400px] rounded-xl ml-auto">
             </div>
         </div>
     </div>
 </section>
+
+
 
     
 <section class="py-16 relative overflow-hidden">
@@ -218,10 +266,14 @@ style="background-image: url('/your-default-image.jpg');">
     </section>
 
     <section id="kontak" class="py-16 bg-white relative">
-        <div class="vector2"><img src="{{ asset('images/texture-whites.png') }}" alt="texture" ></div>
+        <!-- Vector Elements -->
+        <div class="vector2 absolute top-0 left-0 w-full h-full opacity-20 transition-transform duration-[3000ms] ease-in-out" id="backgroundVectorKontak">
+            <img src="{{ asset('images/texture-whites.png') }}" alt="texture" class="w-full h-full object-cover">
+        </div>
+    
         <div class="container mx-auto px-4 md:px-8">
             <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-8 md:mb-0">
+                <div class="md:w-1/2 mb-8 md:mb-0 opacity-0 translate-y-10 transition-all duration-700 ease-out" id="kontakText">
                     <h2 class="text-3xl font-bold text-primary-red mb-6">Mau ke Toko?</h2>
                     <div class="flex items-start mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 text-primary-red mr-2 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -238,13 +290,16 @@ style="background-image: url('/your-default-image.jpg');">
                         </svg>
                         <p><strong>Jam Buka:</strong> 07:00 - 17:00</p>
                     </div>
-                    <a href="https://maps.app.goo.gl/1NUvPZFRUxF4QPrh7" target="_blank" rel="noopener noreferrer" class="bg-primary-red hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md inline-block">
+                    <a href="https://maps.app.goo.gl/1NUvPZFRUxF4QPrh7" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        class="bg-primary-red text-white font-bold py-2 px-6 rounded-md inline-block transform transition-transform duration-300 hover:scale-105">
                         Lihat di Maps
-                    </a>                    
+                    </a>
                 </div>
-                <div class="md:w-1/2">
+                <div class="md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out delay-200" id="kontakMap">
                     <div class="rounded-lg overflow-hidden shadow-lg h-64 bg-white">
-                        <div class="w-full h-full flex items-center justify-center  ">
+                        <div class="w-full h-full flex items-center justify-center">
                             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3954.5088788653793!2d111.5425276!3d-7.628291900000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e79bffe07d8fb2d%3A0xa83cbdf4f16ea33e!2sToko%20Oleh-Oleh%20Khas%20Madiun%203R!5e0!3m2!1sid!2sid!4v1745504464665!5m2!1sid!2sid" width="700" height="550" style="border:0; background-color:transparent;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
@@ -252,40 +307,37 @@ style="background-image: url('/your-default-image.jpg');">
             </div>
         </div>
     </section>
+    
 
     <section class="py-16 bg-white relative">
-        <div class="vector2"><img src="{{ asset('images/texture-whites.png') }}" alt="texture" ></div>
-        <div class="vector ml-3"><img src="{{ asset('images/texture-whites.png') }}" alt="texture" ></div>
+        <div class="vector2 absolute top-0 left-0 w-full h-full opacity-20 transition-transform duration-[3000ms] ease-in-out" id="backgroundVectorKontak">
+            <img src="{{ asset('images/texture-whites.png') }}" alt="texture" class="w-full h-full object-cover">
+        </div>        
         <div class="container mx-auto px-4 md:px-8">
             <h2 class="text-4xl font-bold text-center text-red-600 mb-12">Testimoni</h2>
     
             <!-- Pastikan Swiper container memiliki tinggi yang cukup -->
-            <div class="swiper mySwiper h-[400px]">
+            <div class="swiper mySwiper h-[500px]">
                 <div class="swiper-wrapper">
                     @forelse ($testimonis as $item)
                         <div class="swiper-slide">
-                            <div class="bg-gray-800 rounded-lg p-6 text-white shadow-lg mx-4 h-full flex flex-col">
-                                <div class="mb-4 flex-grow">
-                                    <!-- Perbaikan path gambar dan fallback jika gambar tidak ada -->
-                                    @if($item->gambarTestimoni && Storage::disk('public')->exists($item->gambarTestimoni))
-                                        <img src="{{ asset('storage/' . $item->gambarTestimoni) }}" 
-                                            alt="Testimoni {{ $loop->iteration }}" 
-                                            class="rounded-lg w-full h-64 object-contain">
-                                    @else
-                                        <div class="rounded-lg w-full h-64 bg-gray-700 flex items-center justify-center">
-                                            <span class="text-gray-400">Gambar tidak tersedia</span>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-300">{{ \Carbon\Carbon::parse($item->tanggalTestimoni)->format('d M Y') }}</p>
-                                </div>
+                            <div class="flex flex-col items-center justify-center p-6 text-white shadow-lg mx-4">
+                                <!-- Menampilkan gambar tanpa card, hanya gambar langsung -->
+                                @if($item->gambarTestimoni && Storage::disk('public')->exists($item->gambarTestimoni))
+                                    <img src="{{ asset('storage/' . $item->gambarTestimoni) }}" 
+                                        alt="Testimoni {{ $loop->iteration }}" 
+                                        class="rounded-lg w-full h-64 object-cover mb-4">
+                                @else
+                                    <div class="rounded-lg w-full h-64 bg-gray-700 flex items-center justify-center mb-4">
+                                        <span class="text-gray-400">Gambar tidak tersedia</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     @empty
                         <div class="swiper-slide">
-                            <div class="bg-gray-800 rounded-lg p-6 text-white shadow-lg mx-4">
-                                <p class="text-center">Belum ada testimoni</p>
+                            <div class="flex items-center justify-center p-6">
+                                <p class="text-center text-gray-500">Belum ada testimoni</p>
                             </div>
                         </div>
                     @endforelse
@@ -298,6 +350,7 @@ style="background-image: url('/your-default-image.jpg');">
             </div>
         </div>
     </section>
+    
     
     <section>
         <footer class="bg-primary-red text-white py-6 text-center font-bold z-10">
@@ -344,6 +397,55 @@ style="background-image: url('/your-default-image.jpg');">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        
+        document.addEventListener('DOMContentLoaded', function () {
+        const sectionKontak = document.querySelector('#kontak');
+        const kontakText = document.getElementById('kontakText');
+        const kontakMap = document.getElementById('kontakMap');
+        const bgKontak = document.getElementById('backgroundVectorKontak');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    kontakText.classList.remove('opacity-0', 'translate-y-10');
+                    kontakMap.classList.remove('opacity-0', 'translate-y-10');
+
+                    // Optional: add effect to background vector
+                    bgKontak.classList.add('translate-y-3');
+                }
+            });
+        }, {
+            threshold: 0.3
+        });
+
+        observer.observe(sectionKontak);
+    });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+        const section = document.querySelector('#produk');
+        const title = document.getElementById('produkTitle');
+        const desc = document.getElementById('produkDesc');
+        const img = document.getElementById('produkImg');
+        const bg = document.getElementById('backgroundVector');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    title.classList.remove('opacity-0', 'translate-y-10');
+                    desc.classList.remove('opacity-0', 'translate-y-10');
+                    img.classList.remove('opacity-0', 'translate-y-10');
+
+                    bg.classList.add('translate-y-3');
+                }
+            });
+        }, {
+            threshold: 0.3
+        });
+
+        observer.observe(section);
+    }); 
+
         const backgroundImages = [
             '{{ asset('images/slide11.jpeg') }}',
             '{{ asset('images/slide2.jpeg') }}',

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage; // Tambahkan import ini
+use Illuminate\Support\Facades\Storage; 
 
 class Testimoni extends Model
 {
@@ -20,7 +20,6 @@ class Testimoni extends Model
         'tanggalTestimoni',
     ];
     
-    // Accessor untuk memudahkan akses gambar
     public function getGambarUrlAttribute()
     {
         if ($this->gambarTestimoni && Storage::disk('public')->exists('testimoni/' . $this->gambarTestimoni)) {
