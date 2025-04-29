@@ -1,47 +1,67 @@
 @extends('layouts.app')
 
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<style>
-    .rounded-box {
-        border: 2px solid #ccc;
-        border-radius: 25px;
-        padding: 20px;
-        background-color: #fff;
-    }
+    <style>
+        .rounded-box {
+            border: 2px solid #ccc;
+            border-radius: 25px;
+            padding: 20px;
+            background: #fff;
+        }
 
-    .btn-custom {
-        border-radius: 12px;
-    }
+        .btn-custom {
+            border-radius: 12px;
+        }
 
-    .table th, .table td {
-        vertical-align: middle;
-    }
+        .form-control {
+            border-radius: 20px;
+            padding: 10px 15px;
+        }
 
-    .badge-status {
-        font-size: 0.9rem;
-        padding: 5px 10px;
-        border-radius: 12px;
-    }
-</style>
+        .btn-save {
+            background: red;
+            color: #fff;
+            border-radius: 25px;
+            padding: 10px;
+            font-weight: bold;
+            width: 100%;
+        }
 
-<div class="container mt-4">
-    <h4 class="fw-bold text-danger mb-4">Data Testimoni</h4>
+        .preview-card {
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            text-align: center;
+        }
 
-    <div class="rounded-box shadow">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <a href="{{ route('testimoni.create') }}" class="btn btn-primary btn-custom">
-                <i class="fas fa-plus-circle me-1"></i> Tambah Testimoni
-            </a>
-        </div>
+        .preview-img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border: 1px dashed #ccc;
+            border-radius: 15px;
+        }
+    </style>
 
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+    <div class="container mt-4">
+        <h4 class="fw-bold text-danger mb-4">Data Testimoni</h4>
+        <div class="rounded-box shadow">
+            <div class="d-flex justify-content-between mb-3">
+                <button class="btn btn-primary btn-custom" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                    <i class="fas fa-plus-circle me-1"></i> Tambah Testimoni
+                </button>
+            </div>
 
-        <div class="table-responsive">
+            @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
+
             <table class="table table-bordered text-center align-middle">
                 <thead class="table-light">
                     <tr>
@@ -52,24 +72,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($testimoni as $index => $item)
+                    @forelse($testimoni as $i => $t)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $i + 1 }}</td>
+                            <td><img src="{{ asset('storage/' . $t->gambarTestimoni) }}"
+                                    style="max-width:100px;border-radius:6px"></td>
+                            <td>{{ \Carbon\Carbon::parse($t->tanggalTestimoni)->format('d M Y') }}</td>
                             <td>
-                                <img src="{{ asset('storage/' . $item->gambarTestimoni) }}" 
-                                     alt="Testimoni Gambar" style="max-width: 100px; border-radius: 6px;">
-                            </td>
-                            <td>{{ \Carbon\Carbon::parse($item->tanggalTestimoni)->format('d M Y') }}</td>
-                            <td>
-                                <a href="{{ route('testimoni.edit', $item->idTestimoni) }}" 
-                                   class="btn btn-warning btn-sm btn-custom" title="Edit">
+                                <button class="btn btn-warning btn-sm btn-custom" data-bs-toggle="modal"
+                                    data-bs-target="#modalEdit" data-id="{{ $t->idTestimoni }}"
+                                    data-gambar="{{ asset('storage/' . $t->gambarTestimoni) }}"
+                                    data-tanggal="{{ $t->tanggalTestimoni }}">
                                     <i class="fas fa-edit"></i>
-                                </a>
-
-                                <button class="btn btn-danger btn-sm btn-custom delete-btn" 
-                                        data-id="{{ $item->idTestimoni }}" title="Hapus">
-                                    <i class="fas fa-trash-alt"></i>
                                 </button>
+
+                                <form id="formDelete" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-danger btn-sm btn-custom btn-delete"
+                                        data-id="{{ $t->idTestimoni }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @empty
@@ -79,34 +103,165 @@
                     @endforelse
                 </tbody>
             </table>
+
+            <div class="d-flex justify-content-end mt-3">
+                {{ $testimoni->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function (e) {
-            const testimoniId = this.getAttribute('data-id');
+    <!-- Modal Tambah -->
+    <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-3 rounded-box">
+                <div class="modal-header border-0">
+                    <h5 class="fw-bold text-danger">Tambah Testimoni</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('testimoni.store') }}" method="POST" enctype="multipart/form-data"
+                    onsubmit="return confirmSave(event)">
+                    @csrf
+                    <div class="modal-body row">
+                        <div class="col-md-7">
+                            <div class="mb-3">
+                                <label class="form-label">Gambar</label>
+                                <input type="file" name="gambarTestimoni" class="form-control" accept="image/*"
+                                    onchange="previewImage(this,'prevAdd')" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" name="tanggalTestimoni" id="addTanggal" class="form-control"
+                                    onchange="updateDate(this,'dateAdd')" required>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="preview-card">
+                                <h5>Preview</h5>
+                                <img id="prevAdd" src="{{ asset('assets/placeholder.png') }}" class="preview-img">
+                                <p><strong>Tanggal:</strong> <span id="dateAdd">-</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 p-0">
+                        <button type="submit" class="btn-save"><i class="fas fa-save me-1"></i> Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit -->
+    <div class="modal fade" id="modalEdit" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-3 rounded-box">
+                <div class="modal-header border-0">
+                    <h5 class="fw-bold text-warning">Edit Testimoni</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formEdit" method="POST" enctype="multipart/form-data" onsubmit="return confirmSave(event)">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" id="editId" name="idTestimoni">
+                    <div class="modal-body row">
+                        <div class="col-md-7">
+                            <div class="mb-3">
+                                <label class="form-label">Gambar</label>
+                                <input type="file" name="gambarTestimoni" class="form-control" accept="image/*"
+                                    onchange="previewImage(this,'prevEdit')">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" name="tanggalTestimoni" id="editTanggal" class="form-control"
+                                    onchange="updateDate(this,'dateEdit')" required>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="preview-card">
+                                <h5>Preview</h5>
+                                <img id="prevEdit" src="{{ asset('assets/placeholder.png') }}" class="preview-img">
+                                <p><strong>Tanggal:</strong> <span id="dateEdit">-</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 p-0">
+                        <button type="submit" class="btn btn-warning w-100 mt-3"><i class="fas fa-save me-1"></i>
+                            Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Preview dan tanggal
+        function previewImage(input, targetId) {
+            if (!input.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = e => document.getElementById(targetId).src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        function updateDate(input, targetId) {
+            const txt = new Date(input.value).toLocaleDateString();
+            document.getElementById(targetId).innerText = txt || '-';
+        }
+
+        // Konfirmasi simpan
+        function confirmSave(e) {
+            e.preventDefault();
             Swal.fire({
-                title: 'Hapus Testimoni?',
-                text: 'Apakah kamu yakin ingin menghapus testimoni ini?',
-                icon: 'warning',
+                title: 'Konfirmasi',
+                text: 'Yakin ingin menyimpan perubahan?',
+                icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'Ya, Hapus!',
+                confirmButtonText: 'Ya',
                 cancelButtonText: 'Batal',
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#aaa'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const form = document.createElement('form');
-                    form.action = '/testimoni/' + testimoniId;
-                    form.method = 'POST';
-                    form.innerHTML = '@csrf @method("DELETE")';
-                    document.body.appendChild(form);
-                    form.submit();
-                }
+                confirmButtonColor: '#3085d6'
+            }).then(res => res.isConfirmed && e.target.submit());
+            return false;
+        }
+
+        // Modal Edit handler
+        document.getElementById('modalEdit').addEventListener('show.bs.modal', e => {
+            const btn = e.relatedTarget;
+            const id = btn.dataset.id;
+            const gambar = btn.dataset.gambar;
+            const tanggal = btn.dataset.tanggal;
+
+            const form = document.getElementById('formEdit');
+            form.action = '/dashboard/testimoni/' + id;
+
+            document.getElementById('editId').value = id;
+            document.getElementById('editTanggal').value = tanggal;
+            updateDate({
+                value: tanggal
+            }, 'dateEdit');
+            document.getElementById('prevEdit').src = gambar;
+        });
+
+        // Delete handler
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                Swal.fire({
+                    title: 'Hapus Testimoni?',
+                    text: 'Data akan dihapus permanen!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Hapus',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#d33'
+                }).then(res => {
+                    if (res.isConfirmed) {
+                        const f = document.createElement('form');
+                        f.method = 'POST';
+                        f.action = '/dashboard/testimoni/' + id;
+                        f.innerHTML = `@csrf @method('DELETE')`;
+                        document.body.appendChild(f);
+                        f.submit();
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 @endsection

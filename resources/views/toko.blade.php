@@ -1,47 +1,51 @@
 @extends('layouts.app')
 
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<style>
-    .rounded-box {
-        border: 2px solid #ccc;
-        border-radius: 25px;
-        padding: 20px;
-        background-color: #fff;
-    }
+    <style>
+        .rounded-box {
+            border: 2px solid #ccc;
+            border-radius: 25px;
+            padding: 20px;
+            background: #fff;
+        }
 
-    .btn-custom {
-        border-radius: 12px;
-    }
+        .btn-custom {
+            border-radius: 12px;
+        }
 
-    .table th, .table td {
-        vertical-align: middle;
-    }
+        .form-control {
+            border-radius: 20px;
+            padding: 10px 15px;
+        }
 
-    .badge-status {
-        font-size: 0.9rem;
-        padding: 5px 10px;
-        border-radius: 12px;
-    }
-</style>
+        .btn-save {
+            background: red;
+            color: #fff;
+            border-radius: 25px;
+            padding: 10px 30px;
+            font-weight: bold;
+            border: none;
+        }
+    </style>
 
-<div class="container mt-4">
-    <h4 class="fw-bold text-danger mb-4">Data Toko</h4>
+    <div class="container mt-4">
+        <h4 class="fw-bold text-danger mb-4">Data Toko</h4>
+        <div class="rounded-box shadow">
+            <div class="d-flex justify-content-between mb-3">
+                <button class="btn btn-primary btn-custom" data-bs-toggle="modal" data-bs-target="#modalTambahToko">
+                    <i class="fas fa-plus-circle me-1"></i> Tambah Toko
+                </button>
+            </div>
 
-    <div class="rounded-box shadow">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <a href="{{ route('toko.create') }}" class="btn btn-primary btn-custom">
-                <i class="fas fa-plus-circle me-1"></i> Tambah Toko
-            </a>
-        </div>
+            @if (session('success'))
+                <div class="alert alert-success">{{ session('success') }}</div>
+            @endif
 
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
-        <div class="table-responsive">
             <table class="table table-bordered text-center align-middle">
                 <thead class="table-light">
                     <tr>
@@ -52,19 +56,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($tokos as $toko)
+                    @forelse($tokos as $i => $toko)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $i + 1 }}</td>
                             <td>{{ $toko->namaToko }}</td>
                             <td>{{ $toko->alamatToko }}</td>
                             <td>
-                                <a href="{{ route('toko.edit', $toko->idToko) }}" 
-                                   class="btn btn-warning btn-sm btn-custom" title="Edit">
+                                <button class="btn btn-warning btn-sm btn-custom" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditToko" data-id="{{ $toko->idToko }}"
+                                    data-nama="{{ $toko->namaToko }}" data-alamat="{{ $toko->alamatToko }}">
                                     <i class="fas fa-edit"></i>
-                                </a>
-
-                                <button class="btn btn-danger btn-sm btn-custom delete-btn" 
-                                        data-id="{{ $toko->idToko }}" title="Hapus">
+                                </button>
+                                <button class="btn btn-danger btn-sm btn-custom btn-delete" data-id="{{ $toko->idToko }}">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </td>
@@ -78,32 +81,122 @@
             </table>
         </div>
     </div>
-</div>
 
-<script>
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function (e) {
-            const tokoId = this.getAttribute('data-id');
+    <!-- Modal Tambah -->
+    <div class="modal fade" id="modalTambahToko" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3 rounded-box">
+                <div class="modal-header border-0">
+                    <h5 class="fw-bold text-danger">Tambah Toko</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('toko.store') }}" method="POST" onsubmit="return confirmSave(event,'Tambah')">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Toko</label>
+                            <input type="text" name="namaToko" class="form-control" required
+                                value="{{ old('namaToko') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Alamat Toko</label>
+                            <input type="text" name="alamatToko" class="form-control" required
+                                value="{{ old('alamatToko') }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="submit" class="btn-save w-100"><i class="fas fa-save me-1"></i> Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit -->
+    <div class="modal fade" id="modalEditToko" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3 rounded-box">
+                <div class="modal-header border-0">
+                    <h5 class="fw-bold text-danger">Edit Toko</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formEditToko" method="POST" onsubmit="return confirmSave(event,'Edit')">
+                    @csrf @method('PUT')
+                    <input type="hidden" name="idUser" value="{{ Auth::id() }}">
+                    <div class="modal-body">
+                        <input type="hidden" id="editIdToko" name="idToko">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Toko</label>
+                            <input type="text" id="editNamaToko" name="namaToko" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Alamat Toko</label>
+                            <input type="text" id="editAlamatToko" name="alamatToko" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="submit" class="btn-save w-100"><i class="fas fa-save me-1"></i> Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SweetAlert confirm
+        function confirmSave(e, mode) {
+            e.preventDefault();
             Swal.fire({
-                title: 'Hapus Toko?',
-                text: 'Apakah kamu yakin ingin menghapus toko ini?',
-                icon: 'warning',
+                title: mode + ' Toko?',
+                text: 'Pastikan data sudah benar.',
+                icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'Ya, Hapus!',
+                confirmButtonText: 'Ya',
                 cancelButtonText: 'Batal',
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#aaa'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const form = document.createElement('form');
-                    form.action = '/toko/' + tokoId;
-                    form.method = 'POST';
-                    form.innerHTML = '@csrf @method("DELETE")';
-                    document.body.appendChild(form);
-                    form.submit();
-                }
+                confirmButtonColor: '#3085d6'
+            }).then(res => {
+                if (res.isConfirmed) e.target.submit();
+            });
+            return false;
+        }
+
+        // Populate Edit Modal
+        const editModal = document.getElementById('modalEditToko');
+        editModal.addEventListener('show.bs.modal', event => {
+            const btn = event.relatedTarget;
+            const id = btn.dataset.id;
+            const nama = btn.dataset.nama;
+            const alamat = btn.dataset.alamat;
+
+            document.getElementById('editIdToko').value = id;
+            document.getElementById('editNamaToko').value = nama;
+            document.getElementById('editAlamatToko').value = alamat;
+            document.getElementById('formEditToko').action = `/dashboard/toko/${id}`;
+        });
+
+        // Delete with confirmation
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                Swal.fire({
+                    title: 'Hapus Toko?',
+                    text: 'Data toko akan dihapus permanen.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Hapus',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#d33'
+                }).then(res => {
+                    if (res.isConfirmed) {
+                        const f = document.createElement('form');
+                        f.method = 'POST';
+                        f.action = `/dashboard/toko/${id}`;
+                        f.innerHTML = `@csrf @method('DELETE')`;
+                        document.body.appendChild(f);
+                        f.submit();
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 @endsection

@@ -11,8 +11,10 @@ class TestimoniController extends Controller
 {
     public function index()
     {
-        $testimoni = Testimoni::all();
-        return view('testimoni', compact('testimoni'));
+        $testimoni = Testimoni::orderBy('tanggalTestimoni', 'desc')
+            ->paginate(5);
+
+        return view('Testimoni', compact('testimoni'));
     }
 
     public function create()
@@ -41,16 +43,16 @@ class TestimoniController extends Controller
     public function edit($id)
     {
         $testimoni = Testimoni::where('idTestimoni', $id)
-                                ->where('idUser', Auth::user()->idUser)
-                                ->firstOrFail();
+            ->where('idUser', Auth::user()->idUser)
+            ->firstOrFail();
         return view('edittestimoni', compact('testimoni'));
     }
 
     public function update(Request $request, $id)
     {
         $testimoni = Testimoni::where('idTestimoni', $id)
-                                ->where('idUser', Auth::user()->idUser)
-                                ->firstOrFail();
+            ->where('idUser', Auth::user()->idUser)
+            ->firstOrFail();
 
         $request->validate([
             'gambarTestimoni' => 'image|mimes:jpeg,png,jpg|max:2048',
@@ -75,8 +77,8 @@ class TestimoniController extends Controller
     public function destroy($id)
     {
         $testimoni = Testimoni::where('idTestimoni', $id)
-                                ->where('idUser', Auth::user()->idUser)
-                                ->firstOrFail();
+            ->where('idUser', Auth::user()->idUser)
+            ->firstOrFail();
 
         if ($testimoni->gambarTestimoni) {
             Storage::disk('public')->delete($testimoni->gambarTestimoni);
