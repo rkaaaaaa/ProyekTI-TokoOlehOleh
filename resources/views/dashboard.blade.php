@@ -116,7 +116,7 @@
         </div>
 
         <div class="mt-4">
-            <h5 class="fw-bold">Daftar Produk Terbaru</h5>
+            <h5 class="fw-bold text-danger mb-4">Daftar Produk Terbaru</h5>
             <div class="table-responsive rounded-box mt-3">
                 <table class="table table-bordered table-hover text-center">
                     <thead class="table-light">

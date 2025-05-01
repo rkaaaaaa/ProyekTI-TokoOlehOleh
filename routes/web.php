@@ -12,7 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TestimoniController;
 use App\Http\Controllers\TokoController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Middleware\SessionTimeout;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,7 +64,7 @@ Route::middleware(['auth', SuperAdminMiddleware::class])->group(function () {
 // ==========================
 // ROUTE DASHBOARD (SETELAH LOGIN)
 // ==========================
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\SessionTimeout::class])->group(function () {
 
     // Sekarang tampilkan halaman dashboard:
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

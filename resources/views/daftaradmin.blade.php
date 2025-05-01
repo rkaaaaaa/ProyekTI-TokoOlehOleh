@@ -26,6 +26,20 @@
             padding: 5px 10px;
             border-radius: 12px;
         }
+
+        .form-control {
+            border-radius: 20px;
+            padding: 10px 15px;
+        }
+
+        .btn-save {
+            background: red;
+            color: #fff;
+            border-radius: 25px;
+            padding: 10px 30px;
+            font-weight: bold;
+            border: none;
+        }
     </style>
 
     <div class="container mt-4">
@@ -33,9 +47,11 @@
 
         <div class="rounded-box shadow">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <a href="{{ route('register.form') }}" class="btn btn-primary btn-custom">
-                    <i class="fas fa-user-plus me-1"></i> Tambah Admin
-                </a>
+                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal" data-bs-target="#modalTambahAdmin">
+                    <i class="fas fa-plus-circle me-1"></i> Tambah Admin
+                </button>
+                
+                
             </div>
 
             @if (session('success'))
@@ -56,8 +72,26 @@
                 </script>
             @endif
 
-            @if (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
+            @if ($errors->any())
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: @if ($errors->has('namaUser'))
+                                'Username sudah digunakan.'
+                            @elseif ($errors->has('passwordUser'))
+                                'Password minimal 6 karakter.'
+                            @else
+                                'Terjadi kesalahan, coba lagi.'
+                            @endif ,
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    });
+                </script>
             @endif
 
             <div class="table-responsive">
@@ -85,10 +119,12 @@
                                 <td>{{ \Carbon\Carbon::parse($admin->created_at)->timezone('Asia/Jakarta')->format('d M Y H:i') }}
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.edit', $admin->idUser) }}"
-                                        class="btn btn-warning btn-sm btn-custom" title="Edit">
+                                    <button class="btn btn-warning btn-sm btn-custom edit-btn"
+                                        data-id="{{ $admin->idUser }}" data-nama="{{ $admin->namaUser }}"
+                                        data-status="{{ $admin->statusUser }}" data-password="" data-bs-toggle="modal"
+                                        data-bs-target="#modalEditAdmin" title="Edit">
                                         <i class="fas fa-edit"></i>
-                                    </a>
+                                    </button>
 
                                     <button class="btn btn-danger btn-sm btn-custom delete-btn"
                                         data-id="{{ $admin->idUser }}" title="Hapus">
@@ -121,10 +157,85 @@
         </div>
     </div>
 
+    <!-- Modal Tambah Admin -->
+    <div class="modal fade" id="modalTambahAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3 rounded-box">
+                <div class="modal-header border-0">
+                    <h5 class="fw-bold text-danger">Tambah Admin</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('register.store') }}" method="POST" onsubmit="return confirmSave(event,'Tambah')">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Admin</label>
+                            <input type="text" name="namaUser" class="form-control" required
+                                value="{{ old('namaUser') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordUser" class="form-label">Password</label>
+                            <input type="password" name="passwordUser" class="form-control" required
+                                value="{{ old('passwordUser') }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="statusUser" class="form-label">Status</label>
+                            <select name="statusUser" class="form-control" required>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Nonaktif">Nonaktif</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="submit" class="btn-save w-100"><i class="fas fa-save me-1"></i> Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Admin -->
+    <div class="modal fade" id="modalEditAdmin" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3 rounded-box">
+                <div class="modal-header border-0">
+                    <h5 class="fw-bold text-danger">Edit Admin</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('admin.update', ':id') }}" method="POST" id="editAdminForm"
+                    onsubmit="return confirmSave(event,'Edit')">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Admin</label>
+                            <input type="text" name="namaUser" class="form-control" required id="editNamaUser">
+                        </div>
+                        <div class="mb-3">
+                            <label for="statusUser" class="form-label">Status</label>
+                            <select name="statusUser" class="form-control" required id="editStatusUser">
+                                <option value="Aktif">Aktif</option>
+                                <option value="Nonaktif">Nonaktif</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordUser" class="form-label">Password Baru</label>
+                            <input type="password" name="passwordUser" class="form-control" id="editPasswordUser">
+                            <div class="form-text">Kosongkan jika tidak ingin mengganti password.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="submit" class="btn-save w-100"><i class="fas fa-save me-1"></i> Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Script Hapus Admin -->
     <script>
         document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                const adminId = this.getAttribute('data-id');
+            button.addEventListener('click', function() {
+                const adminId = this.dataset.id;
                 Swal.fire({
                     title: 'Hapus Admin?',
                     text: 'Apakah kamu yakin ingin menghapus admin ini?',
@@ -134,10 +245,10 @@
                     cancelButtonText: 'Batal',
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#aaa'
-                }).then((result) => {
+                }).then(result => {
                     if (result.isConfirmed) {
                         const form = document.createElement('form');
-                        form.action = '/admin/' + adminId;
+                        form.action = `/admin/${adminId}`;
                         form.method = 'POST';
                         form.innerHTML = '@csrf @method('DELETE')';
                         document.body.appendChild(form);
@@ -147,10 +258,11 @@
             });
         });
 
+        // Script Toggle Status
         document.querySelectorAll('.toggle-status-btn').forEach(button => {
             button.addEventListener('click', function() {
-                const adminId = this.getAttribute('data-id');
-                const currentStatus = this.getAttribute('data-status');
+                const adminId = this.dataset.id;
+                const currentStatus = this.dataset.status;
                 const newStatus = currentStatus === 'Aktif' ? 'Nonaktifkan' : 'Aktifkan';
 
                 Swal.fire({
@@ -162,12 +274,29 @@
                     cancelButtonText: 'Batal',
                     confirmButtonColor: '#0d6efd',
                     cancelButtonColor: '#aaa'
-                }).then((result) => {
+                }).then(result => {
                     if (result.isConfirmed) {
                         document.getElementById('toggle-status-form-' + adminId).submit();
                     }
                 });
             });
         });
+
+        //<!-- Script Edit Admin -->
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const adminId = this.dataset.id;
+                const namaUser = this.dataset.nama;
+                const statusUser = this.dataset.status;
+
+                // Update modal form action URL
+                document.getElementById('editAdminForm').action = `/admin/${adminId}`;
+
+                // Set current values to modal inputs
+                document.getElementById('editNamaUser').value = namaUser;
+                document.getElementById('editStatusUser').value = statusUser;
+            });
+        });
+
     </script>
 @endsection

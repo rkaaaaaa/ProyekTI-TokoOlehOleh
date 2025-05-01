@@ -1,10 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         .rounded-box {
@@ -53,13 +51,41 @@
         <h4 class="fw-bold text-danger mb-4">Data Testimoni</h4>
         <div class="rounded-box shadow">
             <div class="d-flex justify-content-between mb-3">
-                <button class="btn btn-primary btn-custom" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal" data-bs-target="#modalTambah">
                     <i class="fas fa-plus-circle me-1"></i> Tambah Testimoni
                 </button>
             </div>
 
             @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <script>
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: '{{ session('success') }}',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer);
+                            toast.addEventListener('mouseleave', Swal.resumeTimer);
+                        }
+                    });
+                </script>
+            @endif
+
+            @if ($errors->any())
+                <script>
+                    Swal.fire({
+                        toast: true,
+                        icon: 'error',
+                        title: '{{ $errors->first() }}',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                </script>
             @endif
 
             <table class="table table-bordered text-center align-middle">
@@ -142,8 +168,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer border-0 p-0">
-                        <button type="submit" class="btn-save"><i class="fas fa-save me-1"></i> Simpan</button>
+                    <div class="modal-footer border-0">
+                        <button type="submit" class="btn-save w-100"><i class="fas fa-save me-1"></i> Simpan</button>
                     </div>
                 </form>
             </div>
@@ -250,15 +276,13 @@
                     showCancelButton: true,
                     confirmButtonText: 'Hapus',
                     cancelButtonText: 'Batal',
-                    confirmButtonColor: '#d33'
-                }).then(res => {
-                    if (res.isConfirmed) {
-                        const f = document.createElement('form');
-                        f.method = 'POST';
-                        f.action = '/dashboard/testimoni/' + id;
-                        f.innerHTML = `@csrf @method('DELETE')`;
-                        document.body.appendChild(f);
-                        f.submit();
+                    confirmButtonColor: '#d33',
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        // Mengirim request untuk menghapus data
+                        const form = document.getElementById('formDelete');
+                        form.action = '/dashboard/testimoni/' + id;
+                        form.submit(); // Submit form untuk menghapus
                     }
                 });
             });

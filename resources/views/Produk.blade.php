@@ -1,10 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         .rounded-box {
@@ -50,13 +48,41 @@
         <h4 class="fw-bold text-danger mb-4">Data Produk</h4>
         <div class="rounded-box shadow">
             <div class="d-flex justify-content-between mb-3">
-                <button class="btn btn-primary btn-custom" data-bs-toggle="modal" data-bs-target="#modalTambahProduk">
+                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal" data-bs-target="#modalTambahProduk">
                     <i class="fas fa-plus-circle me-1"></i> Tambah Produk
                 </button>
             </div>
 
             @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <script>
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: '{{ session('success') }}',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer);
+                            toast.addEventListener('mouseleave', Swal.resumeTimer);
+                        }
+                    });
+                </script>
+            @endif
+
+            @if ($errors->any())
+                <script>
+                    Swal.fire({
+                        toast: true,
+                        icon: 'error',
+                        title: '{{ $errors->first() }}',
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                </script>
             @endif
 
             <table class="table table-bordered text-center align-middle">
@@ -176,8 +202,7 @@
                         </div>
                     </div>
                     <div class="modal-footer border-0">
-                        <button type="submit" class="btn btn-save w-100"><i class="fas fa-save me-1"></i>
-                            Simpan</button>
+                        <button type="submit" class="btn-save w-100"><i class="fas fa-save me-1"></i> Simpan</button>
                     </div>
                 </form>
             </div>
@@ -272,7 +297,7 @@
             const hrgtEl = document.getElementById(mode === 'tambah' ? 'hargaTambah' : 'editHarga');
 
             document.getElementById(mode === 'tambah' ? 'namaPrevTambah' : 'namaPrevEdit').textContent = namaEl.value ||
-            '-';
+                '-';
             document.getElementById(mode === 'tambah' ? 'kategoriPrevTambah' : 'kategoriPrevEdit').textContent = katEl
                 .value || '-';
             document.getElementById(mode === 'tambah' ? 'varianPrevTambah' : 'varianPrevEdit').textContent = varEl.value ||
