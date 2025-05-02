@@ -40,6 +40,10 @@
             background-color: var(--primary-red);
         }
 
+        .swiper-pagination {
+            margin-top: 8px !important;
+        }
+
         .vector {
             position: absolute;
             background-size: contain;
@@ -298,7 +302,7 @@ style="background-image: url('/your-default-image.jpg');">
                 <div class="md:w-1/2 opacity-0 translate-y-10 transition-all duration-700 ease-out delay-200" id="kontakMap">
                     <div class="rounded-lg overflow-hidden shadow-lg h-64 bg-white">
                         <div class="w-full h-full flex items-center justify-center">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3954.5088788653793!2d111.5425276!3d-7.628291900000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e79bffe07d8fb2d%3A0xa83cbdf4f16ea33e!2sToko%20Oleh-Oleh%20Khas%20Madiun%203R!5e0!3m2!1sid!2sid!4v1745504464665!5m2!1sid!2sid" width="700" height="550" style="border:0; background-color:transparent;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3954.5088788653793!2d111.5425276!3d-7.628291900000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e79bffe07d8fb2d%3A0xa83cbdf4f16ea33e!2sToko%20Oleh-Oleh%20Khas%20Madiun%203R!5e0!3m2!1sid!2sid!4v1746160237362!5m2!1sid!2sid" width="700" height="550" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>                        
                         </div>
                     </div>
                 </div>
@@ -314,7 +318,7 @@ style="background-image: url('/your-default-image.jpg');">
         <div class="container mx-auto px-4 md:px-8">
             <h2 class="text-4xl font-bold text-center text-red-600 mb-12">Testimoni</h2>
     
-            <div class="swiper mySwiper h-[500px]">
+            <div class="swiper mySwiper h-[600px] ">
                 <div class="swiper-wrapper">
                     @forelse ($testimonis as $item)
                         <div class="swiper-slide">
@@ -341,7 +345,7 @@ style="background-image: url('/your-default-image.jpg');">
     
                 <div class="swiper-button-next after:text-red-600"></div>
                 <div class="swiper-button-prev after:text-red-600"></div>
-                <div class="swiper-pagination mt-6"></div>
+                <div class="swiper-pagination mb-13"></div>
             </div>
         </div>
     </section>

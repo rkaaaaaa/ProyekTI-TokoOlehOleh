@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('title', 'Produk')
+<link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
 
 @section('content')
 <style>
@@ -67,12 +68,19 @@
                 <h5 class="text-xl font-semibold tracking-tight text-gray-900">{{ $item->namaProduk }}</h5>
             </a>
 
-            @if(strpos($item->namaProduk, 'Sambel') !== false && strpos($item->deskripsiProduk, 'Varian:') !== false)
+            @if($item->kategoriProduk == 'Sambel')
                 @php
-                    preg_match('/Varian:\s*(.*?)(?:\s*\.|$)/i', $item->deskripsiProduk, $matches);
-                    $varian = isset($matches[1]) ? $matches[1] : '';
+                    // Get variant from the varian field if it exists
+                    $varian = $item->varian ?? '';
+                    
+                    // If varian field is empty, try to extract from description
+                    if (empty($varian) && strpos($item->deskripsiProduk, 'Varian:') !== false) {
+                        preg_match('/Varian:\s*(.*?)(?:\s*\.|$)/i', $item->deskripsiProduk, $matches);
+                        $varian = isset($matches[1]) ? $matches[1] : '';
+                    }
                 @endphp
-                @if($varian)
+                
+                @if(!empty($varian))
                 <div class="mt-1">
                     <span>Varian: </span>
                     <span class="font-bold">{{ $varian }}</span>
