@@ -64,7 +64,7 @@ class TokoController extends Controller
 
         $toko->update($request->all());
 
-        return redirect()->route('toko.index')->with('success', 'Toko berhasil diupdate.');
+        return redirect()->route('toko.index')->with('success', 'Toko berhasil diubah.');
     }
 
     public function destroy(Toko $toko)
