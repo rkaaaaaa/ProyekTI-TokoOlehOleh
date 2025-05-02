@@ -11,8 +11,8 @@ class SessionTimeout
 {
     public function handle($request, Closure $next)
     {
-        // Tentukan waktu timeout dalam detik (misalnya, 1 menit = 60 detik)
-        $timeout = 60; // Timeout dalam detik
+        // Tentukan waktu timeout dalam detik
+        $timeout = 1800; // Timeout dalam detik
 
         // Cek jika session last_activity ada
         if (Session::has('last_activity')) {
