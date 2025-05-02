@@ -25,9 +25,9 @@
             background: red;
             color: #fff;
             border-radius: 25px;
-            padding: 10px;
+            padding: 10px 30px;
             font-weight: bold;
-            width: 100%;
+            border: none;
         }
 
         .preview-card {

@@ -47,11 +47,12 @@
 
         <div class="rounded-box shadow">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal" data-bs-target="#modalTambahAdmin">
+                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal"
+                    data-bs-target="#modalTambahAdmin">
                     <i class="fas fa-plus-circle me-1"></i> Tambah Admin
                 </button>
-                
-                
+
+
             </div>
 
             @if (session('success'))
@@ -286,17 +287,38 @@
         document.querySelectorAll('.edit-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const adminId = this.dataset.id;
-                const namaUser = this.dataset.nama;
-                const statusUser = this.dataset.status;
+                const nama = this.dataset.nama;
+                const status = this.dataset.status;
 
-                // Update modal form action URL
-                document.getElementById('editAdminForm').action = `/admin/${adminId}`;
+                // Set form action URL dinamis berdasarkan ID
+                const form = document.getElementById('editAdminForm');
+                form.action = `/admin/${adminId}`;
 
-                // Set current values to modal inputs
-                document.getElementById('editNamaUser').value = namaUser;
-                document.getElementById('editStatusUser').value = statusUser;
+                // Isi input form dengan data dari button
+                document.getElementById('editNamaUser').value = nama;
+                document.getElementById('editStatusUser').value = status;
+                document.getElementById('editPasswordUser').value = '';
             });
         });
 
+        // Script Konfirmasi Simpan
+        function confirmSave(event, mode) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Yakin ingin menyimpan data?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Simpan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#aaa'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit();
+                }
+            });
+            return false;
+        }
     </script>
 @endsection
