@@ -3,8 +3,16 @@
 @section('content')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
         body::before {
             content: "";
             position: absolute;
@@ -44,13 +52,26 @@
             font-weight: bold;
             border: none;
         }
+
+        table td img {
+            max-width: 60px;
+            max-height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        table tbody tr {
+            height: 80px;
+            vertical-align: middle;
+        }
     </style>
 
     <div class="container mt-4">
         <h4 class="fw-bold text-danger mb-4">Data Toko</h4>
         <div class="rounded-box shadow">
             <div class="d-flex justify-content-between mb-3">
-                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal" data-bs-target="#modalTambahToko">
+                <button class="btn btn-custom" style="background-color: #ea0707; color: white;" data-bs-toggle="modal"
+                    data-bs-target="#modalTambahToko">
                     <i class="fas fa-plus-circle me-1"></i> Tambah Toko
                 </button>
             </div>
@@ -100,7 +121,7 @@
                 <tbody>
                     @forelse($tokos as $i => $toko)
                         <tr>
-                            <td>{{ $i + 1 }}</td>
+                            <td>{{ $tokos->firstItem() + $i }}</td>
                             <td>{{ $toko->namaToko }}</td>
                             <td>{{ $toko->alamatToko }}</td>
                             <td>
@@ -121,6 +142,42 @@
                     @endforelse
                 </tbody>
             </table>
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between mt-2">
+                <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                    Menampilkan <span style="font-weight: bold;">{{ $tokos->firstItem() }}</span> hingga <span
+                        style="font-weight: bold;">{{ $tokos->lastItem() }}</span> dari total <span
+                        style="font-weight: bold;">{{ $tokos->total() }}</span> toko
+                </p>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item {{ $tokos->onFirstPage() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $tokos->previousPageUrl() }}"
+                                style="background-color: #ea0707; color: white;">
+                                Previous
+                            </a>
+                        </li>
+
+                        @for ($i = 1; $i <= $tokos->lastPage(); $i++)
+                            <li class="page-item {{ $tokos->currentPage() == $i ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $tokos->url($i) }}"
+                                    style="{{ $tokos->currentPage() == $i ? 'background-color: rgba(255, 0, 0, 0.2); color: red; font-weight: bold;' : 'color: red;' }}">
+                                    {{ $i }}
+                                </a>
+                            </li>
+                        @endfor
+
+                        <li class="page-item {{ !$tokos->hasMorePages() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $tokos->nextPageUrl() }}"
+                                style="background-color: #ea0707; color: white;">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
         </div>
     </div>
 
@@ -132,7 +189,7 @@
                     <h5 class="fw-bold text-danger">Tambah Toko</h5>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('toko.store') }}" method="POST" onsubmit="return confirmSave(event,'Tambah')">
+                <form action="{{ route('toko.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">

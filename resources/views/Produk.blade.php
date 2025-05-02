@@ -2,9 +2,17 @@
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
         body::before {
             content: "";
             position: absolute;
@@ -57,13 +65,25 @@
             max-width: 200px;
             border-radius: 8px;
         }
+
+        table td img {
+            max-width: 60px;
+            max-height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        table tbody tr {
+            height: 80px;
+            vertical-align: middle;
+        }
     </style>
 
     <div class="container mt-4">
         <h4 class="fw-bold text-danger mb-4">Data Produk</h4>
         <div class="rounded-box shadow">
             <div class="d-flex justify-content-between mb-3">
-                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal"
+                <button class="btn btn-custom" style="background-color: #ea0707; color: white;" data-bs-toggle="modal"
                     data-bs-target="#modalTambahProduk">
                     <i class="fas fa-plus-circle me-1"></i> Tambah Produk
                 </button>
@@ -153,9 +173,42 @@
                 </tbody>
             </table>
 
-            <div class="d-flex justify-content-end mt-3">
-                {{ $produk->links('pagination::bootstrap-5') }}
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between mt-2">
+                <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                    Menampilkan <span style="font-weight: bold;">{{ $produk->firstItem() }}</span> hingga <span
+                        style="font-weight: bold;">{{ $produk->lastItem() }}</span> dari total <span
+                        style="font-weight: bold;">{{ $produk->total() }}</span> produk
+                </p>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item {{ $produk->onFirstPage() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $produk->previousPageUrl() }}"
+                                style="background-color: #ea0707; color: white;">
+                                Previous
+                            </a>
+                        </li>
+
+                        @for ($i = 1; $i <= $produk->lastPage(); $i++)
+                            <li class="page-item {{ $produk->currentPage() == $i ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $produk->url($i) }}"
+                                    style="{{ $produk->currentPage() == $i ? 'background-color: rgba(255, 0, 0, 0.2); color: red; font-weight: bold;' : 'color: red;' }}">
+                                    {{ $i }}
+                                </a>
+                            </li>
+                        @endfor
+
+                        <li class="page-item {{ !$produk->hasMorePages() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $produk->nextPageUrl() }}"
+                                style="background-color: #ea0707; color: white;">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
+
         </div>
     </div>
 

@@ -17,7 +17,7 @@ class AdminManagementController extends Controller
         $admins = DB::table('ms_user')
             ->where('levelUser', 'Administrator')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(5);
 
         return view('daftaradmin', compact('admins'));
     }

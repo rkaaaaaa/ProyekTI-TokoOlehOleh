@@ -2,9 +2,17 @@
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
         body::before {
             content: "";
             position: absolute;
@@ -16,8 +24,8 @@
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
-            opacity: 0.1; 
-            z-index: -1; 
+            opacity: 0.1;
+            z-index: -1;
         }
 
         .rounded-box {
@@ -55,6 +63,18 @@
             font-weight: bold;
             border: none;
         }
+
+        table td img {
+            max-width: 60px;
+            max-height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        table tbody tr {
+            height: 80px;
+            vertical-align: middle;
+        }
     </style>
 
     <div class="container mt-4">
@@ -62,7 +82,7 @@
 
         <div class="rounded-box shadow">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal"
+                <button class="btn btn-custom" style="background-color: #ea0707; color: white;" data-bs-toggle="modal"
                     data-bs-target="#modalTambahAdmin">
                     <i class="fas fa-plus-circle me-1"></i> Tambah Admin
                 </button>
@@ -124,7 +144,7 @@
                     <tbody>
                         @forelse($admins as $index => $admin)
                             <tr>
-                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $admins->firstItem() + $index }}</td>
                                 <td>{{ $admin->namaUser }}</td>
                                 <td>
                                     <span
@@ -169,6 +189,41 @@
                         @endforelse
                     </tbody>
                 </table>
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between mt-2">
+                    <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                        Menampilkan <span style="font-weight: bold;">{{ $admins->firstItem() }}</span> hingga <span
+                            style="font-weight: bold;">{{ $admins->lastItem() }}</span> dari total <span
+                            style="font-weight: bold;">{{ $admins->total() }}</span> admin
+                    </p>
+
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item {{ $admins->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $admins->previousPageUrl() }}"
+                                    style="background-color: #ea0707; color: white;">
+                                    Previous
+                                </a>
+                            </li>
+
+                            @for ($i = 1; $i <= $admins->lastPage(); $i++)
+                                <li class="page-item {{ $admins->currentPage() == $i ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $admins->url($i) }}"
+                                        style="{{ $admins->currentPage() == $i ? 'background-color: rgba(255, 0, 0, 0.2); color: red; font-weight: bold;' : 'color: red;' }}">
+                                        {{ $i }}
+                                    </a>
+                                </li>
+                            @endfor
+
+                            <li class="page-item {{ !$admins->hasMorePages() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $admins->nextPageUrl() }}"
+                                    style="background-color: #ea0707; color: white;">
+                                    Next
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
@@ -181,7 +236,7 @@
                     <h5 class="fw-bold text-danger">Tambah Admin</h5>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('register.store') }}" method="POST" onsubmit="return confirmSave(event,'Tambah')">
+                <form action="{{ route('register.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -326,8 +381,7 @@
                 showCancelButton: true,
                 confirmButtonText: 'Ya, Simpan',
                 cancelButtonText: 'Batal',
-                confirmButtonColor: '#198754',
-                cancelButtonColor: '#aaa'
+                confirmButtonColor: '#3085d6',
             }).then((result) => {
                 if (result.isConfirmed) {
                     event.target.submit();

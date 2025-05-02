@@ -11,7 +11,7 @@ class TokoController extends Controller
 {
     public function index()
     {
-        $tokos = Toko::with('user')->get();
+        $tokos = Toko::with('user')->paginate(5);
         return view('toko', compact('tokos'));
     }
     

@@ -2,10 +2,18 @@
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
         body::before {
             content: "";
             position: absolute;
@@ -57,6 +65,18 @@
 
         .btn-custom {
             border-radius: 12px;
+        }
+
+        table td img {
+            max-width: 60px;
+            max-height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        table tbody tr {
+            height: 80px;
+            vertical-align: middle;
         }
     </style>
 

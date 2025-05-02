@@ -2,9 +2,17 @@
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
         body::before {
             content: "";
             position: absolute;
@@ -16,8 +24,9 @@
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
-            opacity: 0.1; 
-            z-index: -1; 
+            opacity: 0.1;
+            z-index: -1;
+        }
 
         .rounded-box {
             border: 2px solid #ccc;
@@ -59,13 +68,26 @@
             border: 1px dashed #ccc;
             border-radius: 15px;
         }
+
+        table td img {
+            max-width: 60px;
+            max-height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        table tbody tr {
+            height: 80px;
+            vertical-align: middle;
+        }
     </style>
 
     <div class="container mt-4">
         <h4 class="fw-bold text-danger mb-4">Data Testimoni</h4>
         <div class="rounded-box shadow">
             <div class="d-flex justify-content-between mb-3">
-                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                <button class="btn btn-custom" style="background-color: #ea0707; color: white;" data-bs-toggle="modal"
+                    data-bs-target="#modalTambah">
                     <i class="fas fa-plus-circle me-1"></i> Tambah Testimoni
                 </button>
             </div>
@@ -114,7 +136,7 @@
                 <tbody>
                     @forelse($testimoni as $i => $t)
                         <tr>
-                            <td>{{ $i + 1 }}</td>
+                            <td>{{ $testimoni->firstItem() + $i }}</td>
                             <td><img src="{{ asset('storage/' . $t->gambarTestimoni) }}"
                                     style="max-width:100px;border-radius:6px"></td>
                             <td>{{ \Carbon\Carbon::parse($t->tanggalTestimoni)->format('d M Y') }}</td>
@@ -144,8 +166,40 @@
                 </tbody>
             </table>
 
-            <div class="d-flex justify-content-end mt-3">
-                {{ $testimoni->links('pagination::bootstrap-5') }}
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between mt-2">
+                <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                    Menampilkan <span style="font-weight: bold;">{{ $testimoni->firstItem() }}</span> hingga <span
+                        style="font-weight: bold;">{{ $testimoni->lastItem() }}</span> dari total <span
+                        style="font-weight: bold;">{{ $testimoni->total() }}</span> testimoni
+                </p>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item {{ $testimoni->onFirstPage() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $testimoni->previousPageUrl() }}"
+                                style="background-color: #ea0707; color: white;">
+                                Previous
+                            </a>
+                        </li>
+
+                        @for ($i = 1; $i <= $testimoni->lastPage(); $i++)
+                            <li class="page-item {{ $testimoni->currentPage() == $i ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $testimoni->url($i) }}"
+                                    style="{{ $testimoni->currentPage() == $i ? 'background-color: rgba(255, 0, 0, 0.2); color: red; font-weight: bold;' : 'color: red;' }}">
+                                    {{ $i }}
+                                </a>
+                            </li>
+                        @endfor
+
+                        <li class="page-item {{ !$testimoni->hasMorePages() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $testimoni->nextPageUrl() }}"
+                                style="background-color: #ea0707; color: white;">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -158,8 +212,7 @@
                     <h5 class="fw-bold text-danger">Tambah Testimoni</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('testimoni.store') }}" method="POST" enctype="multipart/form-data"
-                    onsubmit="return confirmSave(event)">
+                <form action="{{ route('testimoni.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body row">
                         <div class="col-md-7">
@@ -246,7 +299,7 @@
             document.getElementById(targetId).innerText = txt || '-';
         }
 
-        // Konfirmasi simpan
+        // // Konfirmasi simpan
         function confirmSave(e) {
             e.preventDefault();
             Swal.fire({
