@@ -5,6 +5,21 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ asset('images/texture-whites.png') }}');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
         .rounded-box {
             border: 2px solid #ccc;
             border-radius: 25px;
@@ -48,7 +63,8 @@
         <h4 class="fw-bold text-danger mb-4">Data Produk</h4>
         <div class="rounded-box shadow">
             <div class="d-flex justify-content-between mb-3">
-                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal" data-bs-target="#modalTambahProduk">
+                <button class="btn btn-custom" style="background-color: red; color: white;" data-bs-toggle="modal"
+                    data-bs-target="#modalTambahProduk">
                     <i class="fas fa-plus-circle me-1"></i> Tambah Produk
                 </button>
             </div>

@@ -16,17 +16,17 @@ class ProdukUserController extends Controller
     public function index(Request $request)
     {
         $query = Produk::query();
-        
+
         // Filter by category if provided
         if ($request->has('kategori')) {
             $query->where('kategoriProduk', $request->kategori);
         }
-        
+
         $produk = $query->get();
-        
+
         return view('produkuser.index', compact('produk'));
     }
-    
+
     /**
      * Search for products.
      *
@@ -36,14 +36,14 @@ class ProdukUserController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('search');
-        
+
         $produk = Produk::where('namaProduk', 'LIKE', "%{$search}%")
-                        ->orWhere('deskripsiProduk', 'LIKE', "%{$search}%")
-                        ->get();
-        
+            ->orWhere('deskripsiProduk', 'LIKE', "%{$search}%")
+            ->get();
+
         return view('produkuser.index', compact('produk'));
     }
-    
+
     /**
      * Display the specified product.
      *
@@ -53,13 +53,13 @@ class ProdukUserController extends Controller
     public function detail($id)
     {
         $produk = Produk::findOrFail($id);
-        
+
         // Get related products (same category, excluding current product)
         $related = Produk::where('kategoriProduk', $produk->kategoriProduk)
-                         ->where('idProduk', '!=', $produk->idProduk)
-                         ->limit(4)
-                         ->get();
-        
+            ->where('idProduk', '!=', $produk->idProduk)
+            ->limit(4)
+            ->get();
+
         return view('produkuser.detail', compact('produk', 'related'));
     }
 }

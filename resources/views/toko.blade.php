@@ -5,6 +5,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ asset('images/texture-whites.png') }}');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
         .rounded-box {
             border: 2px solid #ccc;
             border-radius: 25px;
