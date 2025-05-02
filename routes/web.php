@@ -32,14 +32,12 @@ Route::get('/sejarah', function () {
     return view('usersejarah');
 })->name('sejarah');
 
-Route::get('/lokasi', function () {
-    return view('userlokasi');
-})->name('page.lokasi');
-
 // User product routes
 Route::get('/produk', [ProdukUserController::class, 'index'])->name('produk.user');
 Route::get('/produk/search', [ProdukUserController::class, 'search'])->name('produk.search');
 Route::get('/produk/{id}', [ProdukUserController::class, 'detail'])->name('produk.detail');
+
+Route::get('/lokasi', [TokoController::class, 'indexUsers'])->name('page.lokasi');
 
 // ==========================
 // ROUTE AUTENTIKASI

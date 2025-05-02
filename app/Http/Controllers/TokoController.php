@@ -14,6 +14,12 @@ class TokoController extends Controller
         $tokos = Toko::with('user')->get();
         return view('toko', compact('tokos'));
     }
+    
+    public function indexUsers()
+    {
+        $tokos = Toko::all();
+        return view('userlokasi', compact('tokos'));
+    }
 
     public function create()
     {

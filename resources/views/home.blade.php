@@ -174,7 +174,6 @@ style="background-image: url('/your-default-image.jpg');">
 
 
 <section id="produk" class="product-section py-16 bg-primary-red text-white relative overflow-hidden white-vectors">
-    <!-- Vector Elements -->
     <div class="vector absolute top-0 left-0 w-full h-full opacity-20 transition-transform duration-[3000ms] ease-in-out" id="backgroundVector">
         <img src="{{ asset('images/texture2.png') }}" alt="texture" class="w-full h-full object-cover">
     </div>
@@ -188,7 +187,7 @@ style="background-image: url('/your-default-image.jpg');">
                 <p class="text-lg leading-relaxed">
                     Sambal kacang premium dibuat dari kacang pilihan, gula merah, cabai, dan daun jeruk, 
                     menghasilkan rasa gurih, manis, dan pedas dengan aroma khas yang menggugah selera. 
-                    <br>Cocok untuk sate, siomay, dan hidangan favoritmu!
+                    Cocok untuk sate, siomay, dan hidangan favoritmu!
                 </p>
             </div>
             <div class="md:w-1/2 flex justify-end opacity-0 translate-y-10 transition-all duration-700 ease-out delay-400" id="produkImg">
@@ -266,7 +265,6 @@ style="background-image: url('/your-default-image.jpg');">
     </section>
 
     <section id="kontak" class="py-16 bg-white relative">
-        <!-- Vector Elements -->
         <div class="vector2 absolute top-0 left-0 w-full h-full opacity-20 transition-transform duration-[3000ms] ease-in-out" id="backgroundVectorKontak">
             <img src="{{ asset('images/texture-whites.png') }}" alt="texture" class="w-full h-full object-cover">
         </div>
@@ -316,13 +314,11 @@ style="background-image: url('/your-default-image.jpg');">
         <div class="container mx-auto px-4 md:px-8">
             <h2 class="text-4xl font-bold text-center text-red-600 mb-12">Testimoni</h2>
     
-            <!-- Pastikan Swiper container memiliki tinggi yang cukup -->
             <div class="swiper mySwiper h-[500px]">
                 <div class="swiper-wrapper">
                     @forelse ($testimonis as $item)
                         <div class="swiper-slide">
                             <div class="flex flex-col items-center justify-center p-6 text-white shadow-lg mx-4">
-                                <!-- Menampilkan gambar tanpa card, hanya gambar langsung -->
                                 @if($item->gambarTestimoni && Storage::disk('public')->exists($item->gambarTestimoni))
                                     <img src="{{ asset('storage/' . $item->gambarTestimoni) }}" 
                                         alt="Testimoni {{ $loop->iteration }}" 
@@ -343,7 +339,6 @@ style="background-image: url('/your-default-image.jpg');">
                     @endforelse
                 </div>
     
-                <!-- Navigasi dan pagination -->
                 <div class="swiper-button-next after:text-red-600"></div>
                 <div class="swiper-button-prev after:text-red-600"></div>
                 <div class="swiper-pagination mt-6"></div>
@@ -410,7 +405,6 @@ style="background-image: url('/your-default-image.jpg');">
                     kontakText.classList.remove('opacity-0', 'translate-y-10');
                     kontakMap.classList.remove('opacity-0', 'translate-y-10');
 
-                    // Optional: add effect to background vector
                     bgKontak.classList.add('translate-y-3');
                 }
             });
@@ -460,7 +454,6 @@ style="background-image: url('/your-default-image.jpg');">
         function changeSlide(index) {
             heroSection.style.backgroundImage = `url('${backgroundImages[index]}')`;
     
-            // Update dot classes using Tailwind utility classes
             dots.forEach((dot, i) => {
                 dot.classList.remove('opacity-100', 'bg-primary-red');
                 dot.classList.add('opacity-60', 'bg-white');
@@ -474,22 +467,19 @@ style="background-image: url('/your-default-image.jpg');">
         }
     
         function initCarousel() {
-            changeSlide(0); // Initial background
+            changeSlide(0); 
     
-            // Dot click listeners
             dots.forEach((dot, index) => {
                 dot.addEventListener('click', () => {
                     changeSlide(index);
                 });
             });
     
-            // Auto slide every 5 seconds
             setInterval(() => {
                 const nextSlide = (currentSlide + 1) % backgroundImages.length;
                 changeSlide(nextSlide);
             }, 5000);
     
-            // Navbar scroll effect
             const navbar = document.querySelector('.navbar');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 100) {
