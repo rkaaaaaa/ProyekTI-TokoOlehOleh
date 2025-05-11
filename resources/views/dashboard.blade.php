@@ -92,7 +92,7 @@
                             <div class="card-body d-flex flex-column align-items-center">
                                 <i class="fas fa-user-shield card-icon text-primary"></i>
                                 <h5 class="card-title">Admin</h5>
-                                <div class="card-count">{{ $adminCount }}</div>
+                                <div class="card-count">{{ $adminCount + $superadminCount }}</div>
                             </div>
                         </div>
                     </a>
@@ -102,14 +102,13 @@
                             <div class="card-body d-flex flex-column align-items-center">
                                 <i class="fas fa-user-shield card-icon text-secondary"></i>
                                 <h5 class="card-title">Admin</h5>
-                                <div class="card-count">{{ $adminCount }}</div>
+                                <div class="card-count">{{ $adminCount + $superadminCount }}</div>
                             </div>
                         </div>
                     </a>
                 @endif
             </div>
-
-
+            
             <!-- Produk Card -->
             <div class="col-md-3">
                 <a href="{{ route('dashboard.produk') }}" class="text-decoration-none">

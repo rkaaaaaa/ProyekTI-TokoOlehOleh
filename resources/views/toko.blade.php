@@ -64,6 +64,57 @@
             height: 80px;
             vertical-align: middle;
         }
+
+        /* Styling untuk pagination */
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination .page-item .page-link {
+            border-radius: 50%;
+            margin: 0 3px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #ea0707;
+            color: white;
+            box-shadow: 0 4px 8px rgba(234, 7, 7, 0.2);
+        }
+
+        .pagination .page-item .page-link:hover:not(.active) {
+            background-color: rgba(234, 7, 7, 0.1);
+            color: #ea0707;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            background-color: #f8f9fa;
+        }
+
+        .pagination-nav {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .pagination-info strong {
+            color: #ea0707;
+            font-weight: 600;
+        }
     </style>
 
     <div class="container mt-4">
@@ -108,76 +159,72 @@
                 </script>
             @endif
 
-
-            <table class="table table-bordered text-center align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Toko</th>
-                        <th>Alamat</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($tokos as $i => $toko)
+            <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                    <thead class="table-light">
                         <tr>
-                            <td>{{ $tokos->firstItem() + $i }}</td>
-                            <td>{{ $toko->namaToko }}</td>
-                            <td>{{ $toko->alamatToko }}</td>
-                            <td>
-                                <button class="btn btn-warning btn-sm btn-custom" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditToko" data-id="{{ $toko->idToko }}"
-                                    data-nama="{{ $toko->namaToko }}" data-alamat="{{ $toko->alamatToko }}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm btn-custom btn-delete" data-id="{{ $toko->idToko }}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </td>
+                            <th>No</th>
+                            <th>Nama Toko</th>
+                            <th>Alamat</th>
+                            <th>Aksi</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4">Belum ada data toko.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-            <!-- Pagination -->
-            <div class="d-flex justify-content-between mt-2">
-                <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                    Menampilkan <span style="font-weight: bold;">{{ $tokos->firstItem() }}</span> hingga <span
-                        style="font-weight: bold;">{{ $tokos->lastItem() }}</span> dari total <span
-                        style="font-weight: bold;">{{ $tokos->total() }}</span> toko
-                </p>
+                    </thead>
+                    <tbody>
+                        @forelse($tokos as $i => $toko)
+                            <tr>
+                                <td>{{ $tokos->firstItem() + $i }}</td>
+                                <td>{{ $toko->namaToko }}</td>
+                                <td>{{ $toko->alamatToko }}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm btn-custom" data-bs-toggle="modal"
+                                        data-bs-target="#modalEditToko" data-id="{{ $toko->idToko }}"
+                                        data-nama="{{ $toko->namaToko }}" data-alamat="{{ $toko->alamatToko }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm btn-custom btn-delete"
+                                        data-id="{{ $toko->idToko }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4">Belum ada data toko.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+                <!-- Pagination -->
+                <div class="pagination-nav mt-3">
+                    <p class="pagination-info mb-0">
+                        Menampilkan <strong>{{ $tokos->firstItem() }}</strong> hingga
+                        <strong>{{ $tokos->lastItem() }}</strong> dari total <strong>{{ $tokos->total() }}</strong>
+                        admin
+                    </p>
 
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-end">
-                        <li class="page-item {{ $tokos->onFirstPage() ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ $tokos->previousPageUrl() }}"
-                                style="background-color: #ea0707; color: white;">
-                                Previous
-                            </a>
-                        </li>
-
-                        @for ($i = 1; $i <= $tokos->lastPage(); $i++)
-                            <li class="page-item {{ $tokos->currentPage() == $i ? 'active' : '' }}">
-                                <a class="page-link" href="{{ $tokos->url($i) }}"
-                                    style="{{ $tokos->currentPage() == $i ? 'background-color: rgba(255, 0, 0, 0.2); color: red; font-weight: bold;' : 'color: red;' }}">
-                                    {{ $i }}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item {{ $tokos->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $tokos->previousPageUrl() }}" aria-label="Previous">
+                                    <i class="fas fa-chevron-left"></i>
                                 </a>
                             </li>
-                        @endfor
 
-                        <li class="page-item {{ !$tokos->hasMorePages() ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ $tokos->nextPageUrl() }}"
-                                style="background-color: #ea0707; color: white;">
-                                Next
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                            @for ($i = 1; $i <= $tokos->lastPage(); $i++)
+                                <li class="page-item {{ $tokos->currentPage() == $i ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $tokos->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <li class="page-item {{ !$tokos->hasMorePages() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $tokos->nextPageUrl() }}" aria-label="Next">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-
         </div>
     </div>
 

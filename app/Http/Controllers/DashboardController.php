@@ -16,6 +16,7 @@ class DashboardController extends Controller
         $errorMessage = session('error');
 
         $adminCount = MsUser::where('levelUser', 'Administrator')->count();
+        $superadminCount = MsUser::where('levelUser', 'Superadmin')->count();
         $tokoCount = Toko::count();
         $produkCount = Produk::count();
         $testimoniCount = Testimoni::count();
@@ -25,11 +26,12 @@ class DashboardController extends Controller
 
         return view('dashboard', compact(
             'adminCount',
+            'superadminCount', 
             'tokoCount',
             'produkCount',
             'testimoniCount',
             'produk',
-            'errorMessage' // Menambahkan pesan error ke view
+            'errorMessage' 
         ));
     }
 }

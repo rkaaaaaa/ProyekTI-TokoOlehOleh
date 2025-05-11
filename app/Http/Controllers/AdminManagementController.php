@@ -13,13 +13,15 @@ class AdminManagementController extends Controller
      */
     public function index()
     {
-        // Ambil semua admin (level Administrator)
+        // Ambil semua admin (termasuk Superadmin dan Administrator)
         $admins = DB::table('ms_user')
-            ->where('levelUser', 'Administrator')
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw('idUser = 1 DESC') 
+            ->orderByRaw('levelUser = "Superadmin" DESC') 
+            ->orderBy('created_at', 'desc') 
             ->paginate(5);
+        $jumlahSuperadmin = DB::table('ms_user')->where('levelUser', 'Superadmin')->count();
 
-        return view('daftaradmin', compact('admins'));
+        return view('daftaradmin', compact('admins', 'jumlahSuperadmin'));
     }
 
     /**
@@ -28,10 +30,15 @@ class AdminManagementController extends Controller
     public function edit($id)
     {
         $admin = DB::table('ms_user')->where('idUser', $id)->first();
-        
-        if (!$admin || $admin->levelUser !== 'Administrator') {
+
+        if (!$admin) {
             return redirect()->route('admin.index')
                 ->with('error', 'Admin tidak ditemukan');
+        }
+
+        // Cek jika admin adalah Superadmin nonaktif
+        if ($admin->levelUser === 'Superadmin' && $admin->statusUser === 'Nonaktif') {
+            session()->flash('superadmin_nonaktif', 'Level Superadmin ini sudah dalam keadaan Nonaktif.');
         }
 
         return view('editdaftaradmin', compact('admin'));
@@ -43,12 +50,32 @@ class AdminManagementController extends Controller
     public function update(Request $request, $id)
     {
         $admin = DB::table('ms_user')->where('idUser', $id)->first();
-        
-        if (!$admin || $admin->levelUser !== 'Administrator') {
-            return redirect()->route('admin.index')
-                ->with('error', 'Admin tidak ditemukan');
+
+        if (!$admin) {
+            return redirect()->route('admin.index')->with('error', 'Admin tidak ditemukan');
         }
 
+        $jumlahSuperadmin = DB::table('ms_user')->where('levelUser', 'Superadmin')->count();
+
+        // Jika admin adalah Superadmin terakhir dan level diubah
+        if ($admin->levelUser === 'Superadmin' && $jumlahSuperadmin === 1 && $request->levelUser !== 'Superadmin') {
+            return redirect()->back()->with('error', 'Tidak dapat mengubah level Superadmin terakhir.');
+        }
+
+        // Jika ingin menaikkan ke Superadmin, pastikan belum ada Superadmin lain
+        if ($request->levelUser === 'Superadmin' && $admin->levelUser !== 'Superadmin' && $jumlahSuperadmin >= 3) {
+            return redirect()->back()->withInput()->withErrors([
+                'levelUser' => 'Jumlah Superadmin tidak boleh lebih dari 3.',
+            ]);
+        }
+
+        // Cegah pengeditan Superadmin dengan idUser = 1
+        if ($admin->idUser === 1) {
+            return redirect()->route('admin.index')
+                ->with('error', 'Superadmin yang memiliki idUser = 1 tidak dapat diedit.');
+        }
+
+        // Validasi inputan
         $request->validate([
             'namaUser' => [
                 'required',
@@ -56,15 +83,16 @@ class AdminManagementController extends Controller
                 Rule::unique('ms_user')->ignore($id, 'idUser'),
             ],
             'statusUser' => 'required|in:Aktif,Nonaktif',
+            'levelUser' => 'required|in:Administrator,Superadmin',
         ]);
 
         $data = [
             'namaUser' => $request->namaUser,
             'statusUser' => $request->statusUser,
+            'levelUser' => $request->levelUser,
             'updated_at' => now(),
         ];
 
-        // Jika password diisi, update password
         if ($request->filled('passwordUser')) {
             $request->validate([
                 'passwordUser' => 'min:6',
@@ -86,10 +114,16 @@ class AdminManagementController extends Controller
     public function toggleStatus($id)
     {
         $admin = DB::table('ms_user')->where('idUser', $id)->first();
-        
-        if (!$admin || $admin->levelUser !== 'Administrator') {
+
+        if (!$admin) {
             return redirect()->route('admin.index')
                 ->with('error', 'Admin tidak ditemukan');
+        }
+
+        // Cegah perubahan status Superadmin dengan idUser = 1
+        if ($admin->idUser === 1) {
+            return redirect()->route('admin.index')
+                ->with('error', 'Superadmin yang memiliki idUser = 1 tidak dapat diubah statusnya.');
         }
 
         $newStatus = $admin->statusUser === 'Aktif' ? 'Nonaktif' : 'Aktif';
@@ -111,15 +145,29 @@ class AdminManagementController extends Controller
     public function destroy($id)
     {
         $admin = DB::table('ms_user')->where('idUser', $id)->first();
-        
-        if (!$admin || $admin->levelUser !== 'Administrator') {
+
+        if (!$admin) {
             return redirect()->route('admin.index')
                 ->with('error', 'Admin tidak ditemukan');
         }
 
+        // Cegah penghapusan Superadmin dengan idUser = 1
+        if ($admin->idUser === 1) {
+            return redirect()->route('admin.index')
+                ->with('error', 'Superadmin yang memiliki idUser = 1 tidak dapat dihapus.');
+        }
+
+        // Cegah penghapusan Superadmin terakhir
+        if ($admin->levelUser === 'Superadmin') {
+            $jumlahSuperadmin = DB::table('ms_user')->where('levelUser', 'Superadmin')->count();
+
+            if ($jumlahSuperadmin <= 1) {
+                return redirect()->route('admin.index')->with('error', 'Tidak dapat menghapus Superadmin terakhir.');
+            }
+        }
+
         DB::table('ms_user')->where('idUser', $id)->delete();
 
-        return redirect()->route('admin.index')
-            ->with('success', 'Admin berhasil dihapus');
+        return redirect()->route('admin.index')->with('success', 'Admin berhasil dihapus');
     }
 }

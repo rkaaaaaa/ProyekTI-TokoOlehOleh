@@ -77,6 +77,56 @@
             height: 80px;
             vertical-align: middle;
         }
+         /* Styling untuk pagination */
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination .page-item .page-link {
+            border-radius: 50%;
+            margin: 0 3px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #ea0707;
+            color: white;
+            box-shadow: 0 4px 8px rgba(234, 7, 7, 0.2);
+        }
+
+        .pagination .page-item .page-link:hover:not(.active) {
+            background-color: rgba(234, 7, 7, 0.1);
+            color: #ea0707;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            background-color: #f8f9fa;
+        }
+
+        .pagination-nav {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .pagination-info strong {
+            color: #ea0707;
+            font-weight: 600;
+        }
     </style>
 
     <div class="container mt-4">
@@ -121,94 +171,90 @@
                 </script>
             @endif
 
-            <table class="table table-bordered text-center align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>No</th>
-                        <th>Gambar</th>
-                        <th>Nama</th>
-                        <th>Kategori</th>
-                        <th>Varian</th>
-                        <th>Harga</th>
-                        <th>Deskripsi</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($produk as $i => $item)
+            <div class="table-responsive">
+                <table class="table table-bordered text-center align-middle">
+                    <thead class="table-light">
                         <tr>
-                            <td>{{ ($produk->currentPage() - 1) * $produk->perPage() + $i + 1 }}</td>
-                            <td><img src="{{ asset('storage/' . $item->gambarProduk) }}"
-                                    style="max-width:100px;border-radius:6px"></td>
-                            <td>{{ $item->namaProduk }}</td>
-                            <td>{{ $item->kategoriProduk }}</td>
-                            <td>{{ $item->kategoriProduk == 'Sambel' && $item->varian ? $item->varian : '-' }}</td>
-                            <td>Rp {{ number_format($item->hargaProduk, 0, ',', '.') }}</td>
-                            <td>{{ $item->deskripsiProduk }}</td>
-                            <td>
-                                <!-- Edit -->
-                                <button class="btn btn-warning btn-sm btn-custom" data-bs-toggle="modal"
-                                    data-bs-target="#modalEditProduk" data-id="{{ $item->idProduk }}"
-                                    data-nama="{{ $item->namaProduk }}" data-kategori="{{ $item->kategoriProduk }}"
-                                    data-varian="{{ $item->varian }}" data-harga="{{ $item->hargaProduk }}"
-                                    data-deskripsi="{{ $item->deskripsiProduk }}"
-                                    data-gambar="{{ asset('storage/' . $item->gambarProduk) }}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <!-- Delete -->
-                                <form action="{{ route('produk.destroy', $item->idProduk) }}" method="POST"
-                                    class="d-inline" onsubmit="return confirm('Hapus produk ini?')">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-danger btn-sm btn-custom">
-                                        <i class="fas fa-trash-alt"></i>
+                            <th>No</th>
+                            <th>Gambar</th>
+                            <th>Nama</th>
+                            <th>Kategori</th>
+                            <th>Varian</th>
+                            <th>Harga</th>
+                            <th>Deskripsi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($produk as $i => $item)
+                            <tr>
+                                <td>{{ ($produk->currentPage() - 1) * $produk->perPage() + $i + 1 }}</td>
+                                <td><img src="{{ asset('storage/' . $item->gambarProduk) }}"
+                                        style="max-width:100px;border-radius:6px"></td>
+                                <td>{{ $item->namaProduk }}</td>
+                                <td>{{ $item->kategoriProduk }}</td>
+                                <td>{{ $item->kategoriProduk == 'Sambel' && $item->varian ? $item->varian : '-' }}</td>
+                                <td>Rp {{ number_format($item->hargaProduk, 0, ',', '.') }}</td>
+                                <td>{{ $item->deskripsiProduk }}</td>
+                                <td>
+                                    <!-- Edit -->
+                                    <button class="btn btn-warning btn-sm btn-custom" data-bs-toggle="modal"
+                                        data-bs-target="#modalEditProduk" data-id="{{ $item->idProduk }}"
+                                        data-nama="{{ $item->namaProduk }}" data-kategori="{{ $item->kategoriProduk }}"
+                                        data-varian="{{ $item->varian }}" data-harga="{{ $item->hargaProduk }}"
+                                        data-deskripsi="{{ $item->deskripsiProduk }}"
+                                        data-gambar="{{ asset('storage/' . $item->gambarProduk) }}">
+                                        <i class="fas fa-edit"></i>
                                     </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8">Belum ada data produk.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                    <!-- Delete -->
+                                    <form action="{{ route('produk.destroy', $item->idProduk) }}" method="POST"
+                                        class="d-inline" onsubmit="return confirm('Hapus produk ini?')">
+                                        @csrf @method('DELETE')
+                                        <button class="btn btn-danger btn-sm btn-custom">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8">Belum ada data produk.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
 
-            <!-- Pagination -->
-            <div class="d-flex justify-content-between mt-2">
-                <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                    Menampilkan <span style="font-weight: bold;">{{ $produk->firstItem() }}</span> hingga <span
-                        style="font-weight: bold;">{{ $produk->lastItem() }}</span> dari total <span
-                        style="font-weight: bold;">{{ $produk->total() }}</span> produk
-                </p>
+                <!-- Pagination -->
+                <div class="pagination-nav mt-3">
+                    <p class="pagination-info mb-0">
+                        Menampilkan <strong>{{ $produk->firstItem() }}</strong> hingga
+                        <strong>{{ $produk->lastItem() }}</strong> dari total <strong>{{ $produk->total() }}</strong>
+                        admin
+                    </p>
 
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-end">
-                        <li class="page-item {{ $produk->onFirstPage() ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ $produk->previousPageUrl() }}"
-                                style="background-color: #ea0707; color: white;">
-                                Previous
-                            </a>
-                        </li>
-
-                        @for ($i = 1; $i <= $produk->lastPage(); $i++)
-                            <li class="page-item {{ $produk->currentPage() == $i ? 'active' : '' }}">
-                                <a class="page-link" href="{{ $produk->url($i) }}"
-                                    style="{{ $produk->currentPage() == $i ? 'background-color: rgba(255, 0, 0, 0.2); color: red; font-weight: bold;' : 'color: red;' }}">
-                                    {{ $i }}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item {{ $produk->onFirstPage() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $produk->previousPageUrl() }}" aria-label="Previous">
+                                    <i class="fas fa-chevron-left"></i>
                                 </a>
                             </li>
-                        @endfor
 
-                        <li class="page-item {{ !$produk->hasMorePages() ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ $produk->nextPageUrl() }}"
-                                style="background-color: #ea0707; color: white;">
-                                Next
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                            @for ($i = 1; $i <= $produk->lastPage(); $i++)
+                                <li class="page-item {{ $produk->currentPage() == $i ? 'active' : '' }}">
+                                    <a class="page-link" href="{{ $produk->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <li class="page-item {{ !$produk->hasMorePages() ? 'disabled' : '' }}">
+                                <a class="page-link" href="{{ $produk->nextPageUrl() }}" aria-label="Next">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-
         </div>
     </div>
 
@@ -271,7 +317,8 @@
                         </div>
                     </div>
                     <div class="modal-footer border-0">
-                        <button type="submit" class="btn-save w-100"><i class="fas fa-save me-1"></i> Simpan</button>
+                        <button type="submit" class="btn-save w-100"><i class="fas fa-save me-1"></i>
+                            Simpan</button>
                     </div>
                 </form>
             </div>
