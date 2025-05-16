@@ -250,7 +250,7 @@
         message += `\nJumlah: ${quantity}\nHarga: Rp${productPrice}/pcs\n\nMohon informasi lebih lanjut. Terima kasih.`;
         
         const encodedMessage = encodeURIComponent(message);
-        const phoneNumber = "6285607141421"; 
+        const phoneNumber = "6285708945396"; 
         
         window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
     }
