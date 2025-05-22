@@ -51,9 +51,8 @@
     </main>
     
     <footer class="bg-[#e60000] text-white py-6 text-center font-bold mt-auto">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto text-xs px-4">
             <p>&copy; {{ date('Y') }} Sambel Pecel Madiun Asli Selo. All Rights Reserved.</p>
-            <p class="text-xs mt-2">Designed by Information Technology, Politeknik Negeri Madiun '23</p>
         </div>
     </footer>
 </body>

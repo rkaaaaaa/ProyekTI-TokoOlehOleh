@@ -316,9 +316,9 @@ style="background-image: url('/your-default-image.jpg');">
             <img src="{{ asset('images/texture-whites.png') }}" alt="texture" class="w-full h-full object-cover">
         </div>        
         <div class="container mx-auto px-4 md:px-8">
-            <h2 class="text-4xl font-bold text-center text-red-600 mb-12">Testimoni</h2>
+            <h2 class="text-4xl font-bold text-center text-red-600 mb-12 transition-all duration-700 ease-out">Testimoni</h2>
     
-            <div class="swiper mySwiper h-[600px] ">
+            <div class="swiper mySwiper h-[400px] ">
                 <div class="swiper-wrapper">
                     @forelse ($testimonis as $item)
                         <div class="swiper-slide">
@@ -345,7 +345,7 @@ style="background-image: url('/your-default-image.jpg');">
     
                 <div class="swiper-button-next after:text-red-600"></div>
                 <div class="swiper-button-prev after:text-red-600"></div>
-                <div class="swiper-pagination mb-13"></div>
+                <div class="swiper-pagination mb-4"></div>
             </div>
         </div>
     </section>
@@ -353,9 +353,8 @@ style="background-image: url('/your-default-image.jpg');">
     
     <section>
         <footer class="bg-primary-red text-white py-6 text-center font-bold z-10">
-            <div class="container mx-auto px-4">
+            <div class="container mx-auto text-xs px-4">
                 <p>&copy; {{ date('Y') }} Sambel Pecel Madiun Asli Selo. All Rights Reserved.</p>
-                <p class="text-xs mt-2">Designed by Information Technology, Politeknik Negeri Madiun '23</p>
             </div>
         </footer>
     </section>
