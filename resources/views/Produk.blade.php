@@ -77,7 +77,8 @@
             height: 80px;
             vertical-align: middle;
         }
-         /* Styling untuk pagination */
+
+        /* Styling untuk pagination */
         .pagination {
             margin-top: 20px;
         }
@@ -208,9 +209,10 @@
                                     </button>
                                     <!-- Delete -->
                                     <form action="{{ route('produk.destroy', $item->idProduk) }}" method="POST"
-                                        class="d-inline" onsubmit="return confirm('Hapus produk ini?')">
+                                        class="d-inline">
                                         @csrf @method('DELETE')
-                                        <button class="btn btn-danger btn-sm btn-custom">
+                                        <button class="btn btn-danger btn-sm btn-custom btn-delete"
+                                            data-id="{{ $item->idProduk }}">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
@@ -229,7 +231,7 @@
                     <p class="pagination-info mb-0">
                         Menampilkan <strong>{{ $produk->firstItem() }}</strong> hingga
                         <strong>{{ $produk->lastItem() }}</strong> dari total <strong>{{ $produk->total() }}</strong>
-                        admin
+                        produk
                     </p>
 
                     <nav aria-label="Page navigation">
@@ -424,11 +426,14 @@
         }
 
         function previewImage(input, target) {
-            if (!input.files[0]) return;
+            if (!input.files || !input.files[0]) return;
             const reader = new FileReader();
-            reader.onload = e => document.getElementById(target).src = e.target.result;
+            reader.onload = e => {
+                document.getElementById(target).src = e.target.result;
+            };
             reader.readAsDataURL(input.files[0]);
         }
+
 
         document.getElementById('modalEditProduk')
             .addEventListener('show.bs.modal', e => {
@@ -445,5 +450,34 @@
                 updatePreview('edit');
                 document.getElementById('formEditProduk').action = '/dashboard/produk/' + id;
             });
+        // Delete with confirmation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seleksi semua tombol dengan class btn-delete
+            const deleteButtons = document.querySelectorAll('.btn-delete');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault(); // Cegah submit langsung
+
+                    const form = this.closest('form'); // Cari form terdekat
+
+                    Swal.fire({
+                        title: 'Hapus Produk?',
+                        text: 'Apakah kamu yakin ingin menghapus Produk ini!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#aaa',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Submit jika dikonfirmasi
+                        }
+                    });
+                });
+            });
+        });
+
     </script>
 @endsection

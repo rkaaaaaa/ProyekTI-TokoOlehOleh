@@ -108,7 +108,7 @@
                     </a>
                 @endif
             </div>
-            
+
             <!-- Produk Card -->
             <div class="col-md-3">
                 <a href="{{ route('dashboard.produk') }}" class="text-decoration-none">
@@ -159,6 +159,7 @@
                             <th>Gambar</th>
                             <th>Nama Produk</th>
                             <th>Kategori</th>
+                            <th>Varian</th>
                             <th>Harga</th>
                             <th>Deskripsi</th>
                             <th>Aksi</th>
@@ -174,6 +175,7 @@
                                 </td>
                                 <td>{{ $item->namaProduk }}</td>
                                 <td>{{ $item->kategoriProduk }}</td>
+                                <td>{{ $item->kategoriProduk == 'Sambel' && $item->varian ? $item->varian : '-' }}</td>
                                 <td>Rp {{ number_format($item->hargaProduk, 0, ',', '.') }}</td>
                                 <td>{{ $item->deskripsiProduk }}</td>
                                 <td>
@@ -185,8 +187,7 @@
                                         style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm btn-custom" title="Hapus"
-                                            onclick="return confirm('Hapus produk ini?')">
+                                        <button type="submit" class="btn btn-danger btn-sm btn-custom btn-delete" title="Hapus">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
@@ -224,5 +225,32 @@
                 title: 'Anda tidak memiliki izin akses ke halaman admin.'
             });
         }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seleksi semua tombol dengan class btn-delete
+            const deleteButtons = document.querySelectorAll('.btn-delete');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault(); // Cegah submit langsung
+
+                    const form = this.closest('form'); // Cari form terdekat
+
+                    Swal.fire({
+                        title: 'Hapus Produk?',
+                        text: 'Apakah kamu yakin ingin menghapus Produk ini!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#aaa',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Submit jika dikonfirmasi
+                        }
+                    });
+                });
+            });
+        });
     </script>
 @endsection

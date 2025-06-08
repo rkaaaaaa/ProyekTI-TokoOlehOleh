@@ -199,7 +199,7 @@
                     <p class="pagination-info mb-0">
                         Menampilkan <strong>{{ $tokos->firstItem() }}</strong> hingga
                         <strong>{{ $tokos->lastItem() }}</strong> dari total <strong>{{ $tokos->total() }}</strong>
-                        admin
+                        toko
                     </p>
 
                     <nav aria-label="Page navigation">

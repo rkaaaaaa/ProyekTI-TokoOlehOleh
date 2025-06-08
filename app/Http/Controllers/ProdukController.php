@@ -24,33 +24,34 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'namaProduk'     => 'required|string|max:50',
-            'hargaProduk'    => 'required|integer',
-            'gambarProduk'   => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'namaProduk'    => 'required|string|max:50',
+            'hargaProduk'   => 'required|integer',
+            'gambarProduk'  => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'deskripsiProduk'=> 'required|string',
             'kategoriProduk' => 'required|in:Sambel,Makanan',
-            'varian'         => 'required_if:kategoriProduk,Sambel|in:Sedang,Pedas,Extra Pedas',
+            'varian'        => 'required_if:kategoriProduk,Sambel|nullable|in:Sedang,Pedas,Extra Pedas', // Ubah menjadi nullable
         ]);
 
         // Upload gambar
         $gambarPath = $request->file('gambarProduk')->store('produk', 'public');
 
-        // Format deskripsi untuk sambel dengan menambahkan varian
-        $deskripsi = $request->deskripsiProduk;
-        if ($request->kategoriProduk == 'Sambel' && $request->varian) {
-            if (!str_contains($deskripsi, 'Varian:')) {
-                $deskripsi = "Varian: " . $request->varian . ". " . $deskripsi;
-            }
-        }
+        // --- Bagian yang salah: LOGIKA INI DIHAPUS ---
+        // $deskripsi = $request->deskripsiProduk;
+        // if ($request->kategoriProduk == 'Sambel' && $request->varian) {
+        //     if (!str_contains($deskripsi, 'Varian:')) {
+        //         $deskripsi = "Varian: " . $request->varian . ". " . $deskripsi;
+        //     }
+        // }
+        // --- Akhir bagian yang salah ---
 
         Produk::create([
-            'idUser'         => Auth::id(),
-            'namaProduk'     => $request->namaProduk,
-            'hargaProduk'    => $request->hargaProduk,
-            'gambarProduk'   => $gambarPath,
-            'deskripsiProduk'=> $deskripsi,
+            'idUser'        => Auth::id(),
+            'namaProduk'    => $request->namaProduk,
+            'hargaProduk'   => $request->hargaProduk,
+            'gambarProduk'  => $gambarPath,
+            'deskripsiProduk'=> $request->deskripsiProduk, // Gunakan deskripsi asli dari request
             'kategoriProduk' => $request->kategoriProduk,
-            'varian'         => $request->varian,
+            'varian'        => $request->kategoriProduk === 'Sambel' ? $request->varian : null, // Simpan varian hanya jika kategori Sambel, jika tidak set null
         ]);
 
         return redirect()
@@ -69,12 +70,12 @@ class ProdukController extends Controller
         $produk = Produk::findOrFail($id);
 
         $request->validate([
-            'namaProduk'     => 'required|string|max:50',
-            'hargaProduk'    => 'required|integer',
-            'gambarProduk'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'namaProduk'    => 'required|string|max:50',
+            'hargaProduk'   => 'required|integer',
+            'gambarProduk'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'deskripsiProduk'=> 'required|string',
             'kategoriProduk' => 'required|in:Sambel,Makanan',
-            'varian'         => 'required_if:kategoriProduk,Sambel|in:Sedang,Pedas,Extra Pedas',
+            'varian'        => 'required_if:kategoriProduk,Sambel|nullable|in:Sedang,Pedas,Extra Pedas', // Ubah menjadi nullable
         ]);
 
         if ($request->hasFile('gambarProduk')) {
@@ -84,21 +85,23 @@ class ProdukController extends Controller
             $produk->gambarProduk = $request->file('gambarProduk')->store('produk', 'public');
         }
 
-        $deskripsi = $request->deskripsiProduk;
-        if ($request->kategoriProduk == 'Sambel' && $request->varian) {
-            if (preg_match('/Varian:\s*(.*?)(?:\s*\.|$)/i', $deskripsi)) {
-                $deskripsi = preg_replace('/Varian:\s*(.*?)(?:\s*\.|$)/i', 'Varian: ' . $request->varian . '.', $deskripsi);
-            } else {
-                $deskripsi = "Varian: " . $request->varian . ". " . $deskripsi;
-            }
-        }
+        // --- Bagian yang salah: LOGIKA INI DIHAPUS ---
+        // $deskripsi = $request->deskripsiProduk;
+        // if ($request->kategoriProduk == 'Sambel' && $request->varian) {
+        //     if (preg_match('/Varian:\s*(.*?)(?:\s*\.|$)/i', $deskripsi)) {
+        //         $deskripsi = preg_replace('/Varian:\s*(.*?)(?:\s*\.|$)/i', 'Varian: ' . $request->varian . '.', $deskripsi);
+        //     } else {
+        //         $deskripsi = "Varian: " . $request->varian . ". " . $deskripsi;
+        //     }
+        // }
+        // --- Akhir bagian yang salah ---
 
         $produk->update([
-            'namaProduk'     => $request->namaProduk,
-            'hargaProduk'    => $request->hargaProduk,
-            'deskripsiProduk'=> $deskripsi,
+            'namaProduk'    => $request->namaProduk,
+            'hargaProduk'   => $request->hargaProduk,
+            'deskripsiProduk'=> $request->deskripsiProduk, // Gunakan deskripsi asli dari request
             'kategoriProduk' => $request->kategoriProduk,
-            'varian'         => $request->varian, 
+            'varian'        => $request->kategoriProduk === 'Sambel' ? $request->varian : null, // Simpan varian hanya jika kategori Sambel, jika tidak set null
         ]);
 
         return redirect()
@@ -142,7 +145,7 @@ class ProdukController extends Controller
         $search = $request->input('search');
 
         $query = Produk::where('namaProduk', 'like', "%{$search}%")
-                       ->orWhere('deskripsiProduk', 'like', "%{$search}%");
+                        ->orWhere('deskripsiProduk', 'like', "%{$search}%");
 
         $query->orderBy('created_at', 'desc');
 

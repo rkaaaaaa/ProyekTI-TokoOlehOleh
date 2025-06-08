@@ -223,7 +223,7 @@
                         Menampilkan <strong>{{ $testimoni->firstItem() }}</strong> hingga
                         <strong>{{ $testimoni->lastItem() }}</strong> dari total
                         <strong>{{ $testimoni->total() }}</strong>
-                        admin
+                        testimoni
                     </p>
 
                     <nav aria-label="Page navigation">
